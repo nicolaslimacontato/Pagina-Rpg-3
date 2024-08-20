@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import DarkModeToggle from './pages/DarkMode';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,8 +16,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="pt-br">
+      <body className="{inter.className} bg-white dark:bg-black text-black dark:text-white">
+      <header className="p-4 flex justify-between items-center">
+          <h1 className="text-xl">Meu Projeto</h1>
+          <DarkModeToggle />
+        </header>
+        {children}
+      </body>
     </html>
   );
 }

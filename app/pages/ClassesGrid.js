@@ -281,11 +281,11 @@ function ClassesGrid() {
   return (
     <section id="classes" className="p-4 container mx-auto">
       {/* Barra de pesquisa */}
-      <div className="mb-4">
+      <div className="mb-4 ">
         <input
           type="text"
           placeholder="Pesquisar classes..."
-          className="w-full p-2 rounded border border-gray-300"
+          className="w-full p-2 rounded border dark:bg-zinc-900 border-gray-300 dark:border-gray-600"
           value={campoDeBusca}
           onChange={(e) => atualizaCampoDeBusca(e.target.value)}
         />
@@ -298,7 +298,7 @@ function ClassesGrid() {
             <ClassCard key={index} {...classData} />
           ))
         ) : (
-          <p className="text-center text-gray-500">Nenhuma classe encontrada.</p>
+          <p className="text-center text-gray-500 dark:text-gray-400">Nenhuma classe encontrada.</p>
         )}
       </div>
     </section>
