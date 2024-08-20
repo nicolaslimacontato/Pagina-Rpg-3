@@ -133,7 +133,7 @@ const classesData = [
     "hitDie": "d10",
     "mainStats": "Força ou Destreza",
     "resistances": "Constituição e Força",
-    "backgroundImage": "./assets/img/guerreiro.png",
+    "backgroundImage": "./assets/img/Guerreiro.png",
     "learnMoreLink": "https://www.dndbeyond.com/classes/fighter"
   },
   {
