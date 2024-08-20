@@ -36,6 +36,17 @@ const classesData = [
     backgroundImage: "./assets/img/barbaro.png",
     learnMoreLink: "https://v-l-d-s.tumblr.com/post/713699317204025344/craftsman"
   },
+  {
+    className: "SUS",
+    iconSrc: "./assets/img/iconesbarbaro.png",
+    source: "Valdas Spire of Secrets (2021)",
+    description: "O Barbáro é um perito em construção e manutenção de equipamentos, capaz de criar e reparar itens de forma eficiente. Ele utiliza suas habilidades manuais e conhecimento técnico para beneficiar o grupo, seja melhorando armas, armaduras ou criando dispositivos úteis.",
+    hitDie: "d10",
+    mainStats: "Qualquer",
+    resistances: "Constituição e Inteligência",
+    backgroundImage: "./assets/img/barbaro.png",
+    learnMoreLink: "https://v-l-d-s.tumblr.com/post/713699317204025344/craftsman"
+  },
 ];
 
 function ClassesGrid() {
