@@ -36,7 +36,7 @@ const ClassCard = ({
             </div>
           </div>
         </div>
-        <div className="flex-grow text-sm mb-4 bg-white/70 dark:bg-zinc-900/70 rounded-lg p-1 border-gray-100 border-2 text-neutral-950 dark:text-neutral-100 font-semibold mt-3 justify-center flex flex-col">
+        <div className="flex-grow text-sm mb-4 bg-white/70 dark:bg-zinc-900/70 rounded-lg p-1 border-zinc-300 dark:border-zinc-700 border-2 text-neutral-950 dark:text-neutral-100 font-semibold mt-3 justify-center flex flex-col transition duration-300 ease-in-out">
           <p className="mb-2">{description}</p>
           <p>
             <strong>Dado de Vida:</strong> {hitDie}

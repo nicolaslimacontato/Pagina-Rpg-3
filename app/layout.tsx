@@ -17,9 +17,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-br">
+      <head>
+          <link rel="icon" href="./assets/img/favicon.png"/>
+          {/* Se você estiver usando um formato ou nome diferente, ajuste o caminho */}
+        </head>
       <body className="{inter.className} bg-white dark:bg-black text-black dark:text-white">
       <header className="p-4 flex justify-between items-center">
-          <h1 className="text-xl">Meu Projeto</h1>
+          <h1 className="text-xl">Telos</h1>
           <DarkModeToggle />
         </header>
         {children}

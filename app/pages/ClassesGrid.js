@@ -285,7 +285,7 @@ function ClassesGrid() {
         <input
           type="text"
           placeholder="Pesquisar classes..."
-          className="w-full p-2 rounded border dark:bg-zinc-900 border-gray-300 dark:border-gray-600"
+          className="w-full p-2 rounded border dark:bg-zinc-900 dark:border-zinc-800"
           value={campoDeBusca}
           onChange={(e) => atualizaCampoDeBusca(e.target.value)}
         />
