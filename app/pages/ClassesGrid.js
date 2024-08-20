@@ -271,11 +271,11 @@ const classesData = [
 ];
 
 function ClassesGrid() {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [campoDeBusca, atualizaCampoDeBusca] = useState('');
 
   // Filtra as classes conforme o termo de pesquisa
   const filteredClasses = classesData.filter((classData) =>
-    classData.className.toLowerCase().includes(searchTerm.toLowerCase())
+    classData.className.toLowerCase().includes(campoDeBusca.toLowerCase())
   );
 
   return (
@@ -286,8 +286,8 @@ function ClassesGrid() {
           type="text"
           placeholder="Pesquisar classes..."
           className="w-full p-2 rounded border border-gray-300"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          value={campoDeBusca}
+          onChange={(e) => atualizaCampoDeBusca(e.target.value)}
         />
       </div>
 
