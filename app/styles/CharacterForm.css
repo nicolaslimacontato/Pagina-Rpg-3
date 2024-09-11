@@ -1,0 +1,71 @@
+/* styles/CharacterForm.css */
+/* Estilos padrão */
+.nomebox {
+    margin-left: 60px;
+    width: 250px;
+}
+
+/* Adicionando transição suave */
+.transition-all {
+    max-height: 0;
+    overflow: hidden;
+    transition: .5s;
+}
+
+.transition-all.hidden {
+    max-height: 0;
+    transition: .5s;
+}
+
+.transition-all:not(.hidden) {
+    max-height: 500px;
+    transition: .5s;
+}
+
+/* Estilo para cursor de pointer */
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.header {
+    background-image: url('https://app.roll20.net/images/dndstyling/CharScroll.svg');
+    width: 900px;
+    height: 140px;
+}
+
+.char-box {
+    background-image: url('https://app.roll20.net/images/dndstyling/CharBox.svg');
+    background-position: 0;
+    margin-left: 70px;
+    width: 480px;
+    height: 100px;
+    padding: 10px;
+}
+
+/* Media query para telas menores que 1024px */
+@media (max-width: 1024px) {
+    .char-box {
+        width: auto;
+        margin-left: 0;
+    }
+
+    .nomebox {
+        margin-left: 40px;
+    }
+
+    .header {
+        background-image: none;
+        flex-direction: column;
+        justify-content: center;
+        background-color: #e5e7eb;
+        width: auto;
+        height: auto;
+    }
+
+    .char-box {
+        background-image: none;
+        background-position: none;
+        background-color: #e5e7eb;
+        margin-top: 20px;
+    }
+}
