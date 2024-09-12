@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import '../styles/CharacterForm.css'; // Corrigido: import correto do CSS
+import '../styles/CharacterForm.css';
+import { classesData } from '../data/classesData'; // Importa o classesData
 
 const CharacterForm: React.FC = () => {
     const [characterName, setCharacterName] = useState<string>('');
     const [race, setRace] = useState<string>('');
-    const [charClass, setCharClass] = useState<string>('');
+    const [charClass, setCharClass] = useState<string>(''); // Atualizado para lidar com a seleção de classes
     const [level, setLevel] = useState<string>('');
     const [background, setBackground] = useState<string>('');
     const [alignment, setAlignment] = useState<string>('');
@@ -34,13 +35,21 @@ const CharacterForm: React.FC = () => {
                             value={race}
                             onChange={(e) => setRace(e.target.value)}
                         />
-                        <input
-                            type="text"
+                        
+                        {/* Campo de seleção para as classes */}
+                        <select
                             className="bg-[#f5f5f5] p-1 text-center text-xs h-7"
-                            placeholder="Classe"
                             value={charClass}
                             onChange={(e) => setCharClass(e.target.value)}
-                        />
+                        >
+                            <option value="">Selecione uma Classe</option>
+                            {classesData.map((classe, index) => (
+                                <option key={index} value={classe.nome}>
+                                    {classe.nome}
+                                </option>
+                            ))}
+                        </select>
+
                         <input
                             type="text"
                             className="bg-[#f5f5f5] p-1 text-center text-xs h-7"
