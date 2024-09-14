@@ -5,3 +5,12 @@
 *   {
     @apply transition-colors duration-200;
 }
+
+@font-face {
+    font-family: 'DragonHunter';
+    src: url('../public/font/DragonHunter-9Ynxj.otf');
+}
+
+h1{
+    font-family: 'DragonHunter';
+}

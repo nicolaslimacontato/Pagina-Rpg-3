@@ -27,7 +27,8 @@
         "./*"
       ]
     },
-    "module": "esnext"
+    "module": "esnext",
+    "strict": false
   },
   "include": [
     "src/**/*",
