@@ -2,68 +2,97 @@
 
 import React, { useState } from 'react';
 import '../styles/CharacterForm.css';
-import { classesData } from '../data/classesData'; // Importa o classesData
+import { classesData } from '../data/classesData';
+import AttributesSection from './AttributesSection';
+import LeftSection from './LeftSection';
 
 const CharacterForm: React.FC = () => {
     const [characterName, setCharacterName] = useState<string>('');
     const [race, setRace] = useState<string>('');
-    const [charClass, setCharClass] = useState<string>(''); // Atualizado para lidar com a seleção de classes
-    const [level, setLevel] = useState<string>('');
+    const [charClass, setCharClass] = useState<string>('');
+    const [level, setLevel] = useState<number>(1); // Agora usando número
     const [background, setBackground] = useState<string>('');
     const [alignment, setAlignment] = useState<string>('');
     const [xp, setXp] = useState<string>('');
     const [deathSaves, setDeathSaves] = useState({ success: 0, fail: 0 });
+    const [maxHp, setMaxHp] = useState(100);
+    const [currentHp, setCurrentHp] = useState(73);
+    const [tempHp, setTempHp] = useState(10);
+    const [movement, setMovement] = useState<number>(30); // Valor inicial de Deslocamento
     const [habilidades, setHabilidades] = useState({
         habilidade1: false,
         habilidade2: false,
         habilidade3: false,
-        habilidade4: false
+        habilidade4: false,
     });
 
     const toggleDetails = (key: string) => {
         setHabilidades((prev) => ({
             ...prev,
-            [key]: !prev[key]
+            [key]: !prev[key],
         }));
+    };
+
+    // Estado para Inventário
+    const [inventory, setInventory] = useState([
+        { item: 'Poção de Cura', quantidade: 3, peso: 0.5 }
+    ]);
+
+    // Função para atualizar o inventário
+    const addItemToInventory = (newItem: any) => {
+        setInventory([...inventory, newItem]);
+    };
+
+    const calculateProficiencyBonus = (level: number): number => {
+        if (level >= 1 && level <= 4) return 2;
+        if (level >= 5 && level <= 8) return 3;
+        if (level >= 9 && level <= 13) return 4;
+        if (level >= 14 && level <= 16) return 5;
+        if (level >= 17) return 6;
+        return 2; // Valor padrão para níveis inválidos
+    };
+
+    const proficiencyBonus = calculateProficiencyBonus(level);
+
+    const handleLevelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newLevel = parseInt(e.target.value, 10) || 1;
+        setLevel(newLevel);
     };
 
     const toggleSuccess = (index: number) => {
         setDeathSaves((prev) => ({
             ...prev,
-            success: prev.success === index ? 0 : index
+            success: prev.success === index ? 0 : index,
         }));
     };
 
     const toggleFail = (index: number) => {
         setDeathSaves((prev) => ({
             ...prev,
-            fail: prev.fail === index ? 0 : index
+            fail: prev.fail === index ? 0 : index,
         }));
     };
 
-    // Atributos do personagem
+    // Estado para Atributos
     const [attributes, setAttributes] = useState({
-        str: 10,
-        dex: 10,
-        con: 10,
-        int: 10,
-        wis: 10,
-        cha: 10,
+        strength: 10,
+        dexterity: 10, // Destreza
+        constitution: 10,
+        intelligence: 10,
+        wisdom: 10,
+        charisma: 10,
     });
-    // Função para ajustar atributos
-    const adjustAttribute = (attr: keyof typeof attributes, amount: number) => {
-        setAttributes((prevAttributes) => {
-            const newValue = Math.max(1, Math.min(20, prevAttributes[attr] + amount));
-            return { ...prevAttributes, [attr]: newValue };
-        });
+
+    // Função para ajustar os atributos
+    const adjustAttribute = (attribute: string, value: number) => {
+        setAttributes((prevAttributes) => ({
+            ...prevAttributes,
+            [attribute]: prevAttributes[attribute] + value,
+        }));
     };
 
-    // Função para calcular o modificador
-    const calculateModifier = (attributeValue: number) => {
-        return Math.floor((attributeValue - 10) / 2);
-    };
+    const dexModifier = Math.floor((attributes.dexterity - 10) / 2); // Calcula o modificador de Destreza
 
-    const [proficiencyBonus, setProficiencyBonus] = useState<number>(3);
     const [inspiration, setInspiration] = useState<boolean>(false);
     const [savingThrows, setSavingThrows] = useState({
         str: false,
@@ -104,10 +133,9 @@ const CharacterForm: React.FC = () => {
     const toggleSkill = (skill: keyof typeof skills) => {
         setSkills((prev) => ({ ...prev, [skill]: !prev[skill] }));
     };
-
     return (
         <div className="p-3 flex flex-col items-center box-content">
-            <h1 className='text-6xl my-8 text-red-500'>FIcha</h1>
+            <h1 className='text-6xl my-8 text-red-500'>Ficha</h1>
             {/* Cabeça */}
             <div className="header bg-no-repeat bg-cover flex items-center">
                 <div className="nomebox">
@@ -143,13 +171,17 @@ const CharacterForm: React.FC = () => {
                             ))}
                         </select>
 
+                        {/* Campo de entrada para o nível */}
                         <input
-                            type="text"
+                            type="number"
                             className="bg-[#f5f5f5] p-1 text-center text-xs h-7"
                             placeholder="Nível"
                             value={level}
-                            onChange={(e) => setLevel(e.target.value)}
+                            onChange={(e) => setLevel(parseInt(e.target.value, 10) || 1)}
+                            min={1}
+                            max={20} // O nível máximo é 20
                         />
+
                         <input
                             type="text"
                             className="bg-[#f5f5f5] p-1 text-center text-xs h-7"
@@ -174,149 +206,47 @@ const CharacterForm: React.FC = () => {
                     </div>
                 </div>
             </div>
+
             {/* Seção de Atributos */}
-            <div className="w-full mt-8 mx-auto container">
-                <div className="bg-gray-100 border-2 border-black p-4 rounded-lg" style={{ boxShadow: "0 0 0 4px white, 0 0 0 7px black" }}>
-                    <div className="flex flex-wrap justify-around gap-4">
-                        {Object.keys(attributes).map((attrKey, index) => {
-                            const attr = attrKey as keyof typeof attributes;
-                            const attributeValue = attributes[attr];
-                            const modifier = calculateModifier(attributeValue);
-                            return (
-                                <div className="text-center w-full sm:w-auto flex-1" key={index}>
-                                    <span className="text-sm font-semibold text-gray-700 mb-1 block">
-                                        {attr.toUpperCase()}
-                                    </span>
-                                    <div className="relative w-20 h-20 mx-auto flex flex-col justify-center items-center bg-white rounded-full border-2 border-gray-300">
-                                        <span className="text-xl font-bold">
-                                            {modifier >= 0 ? `+${modifier}` : modifier}
-                                        </span>
-                                        <div className="flex justify-center items-center">
-                                            <input
-                                                type="number"
-                                                className="ml-3 text-center bg-transparent text-lg w-full"
-                                                value={attributeValue}
-                                                onChange={(e) =>
-                                                    adjustAttribute(attr, parseInt(e.target.value) - attributeValue)
-                                                }
-                                                min="1"
-                                                max="20"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="mt-2 flex justify-center gap-2">
-                                        <button
-                                            type="button"
-                                            onClick={() => adjustAttribute(attr, -1)}
-                                            className="px-2 py-1 bg-red-500 text-white rounded"
-                                        >
-                                            -
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => adjustAttribute(attr, 1)}
-                                            className="px-2 py-1 bg-green-500 text-white rounded"
-                                        >
-                                            +
-                                        </button>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            </div>
+            <AttributesSection attributes={attributes} adjustAttribute={adjustAttribute} />
             <div className="mt-8 flex flex-col lg:flex-row gap-6 p-2 max-w-full">
                 {/* Esquerda */}
                 <div className="flex-1 space-y-6">
-                    {/* Bônus de Proficiência e Inspiração */}
-                    <div className="flex gap-5 justify-center items-center">
-                        <div className="p-3 rounded-lg flex items-center justify-evenly bg-gray-100 border-2 border-black " style={{ boxShadow: "0 0 0 4px white, 0 0 0 7px black" }}>
-                            <div className="flex flex-col justify-center items-center">
-                                <div className="bg-white rounded-full w-12 h-12 flex items-center justify-center border-2 border-gray-300">
-                                    <span className="text-xl font-bold">{proficiencyBonus}</span>
-                                </div>
-                                <span className="text-sm font-semibold text-gray-700 mt-2">Bônus de Proficiência</span>
-                            </div>
-                        </div>
-                        <div className="p-3 rounded-lg flex items-center justify-evenlybg-gray-200 bg-gray-100 border-2 border-black " style={{ boxShadow: "0 0 0 4px white, 0 0 0 7px black" }}>
-                            <div className="flex flex-col justify-center items-center">
-                                <div className="bg-white rounded-full w-12 h-12 flex items-center justify-center border-2 border-gray-300">
-                                    <span className="text-xl font-bold">
-                                        {inspiration ? (
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                                <path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z" />
-                                            </svg>
-                                        ) : (
-                                            "-"
-                                        )}
-                                    </span>
-                                </div>
-                                <span className="text-sm font-semibold text-gray-700 mt-2">Inspiração</span>
-                            </div>
-                            <button className="ml-2 px-2 py-1 bg-blue-500 text-white rounded" onClick={toggleInspiration}>
-                                {inspiration ? "Remover" : "Ativar"}
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Testes de Resistência */}
-                    <div className="p-4 rounded-lg flex flex-col bg-gray-100 border-2 border-black " style={{ boxShadow: "0 0 0 4px white, 0 0 0 7px black" }}>
-                        <span className="text-sm font-semibold text-gray-700">TESTES DE RESISTÊNCIA</span>
-                        <div className="flex flex-col mt-2 space-y-2">
-                            {Object.keys(savingThrows).map((attr) => (
-                                <div className="flex items-center" key={attr}>
-                                    <input
-                                        type="checkbox"
-                                        id={`res_${attr}`}
-                                        checked={savingThrows[attr as keyof typeof savingThrows]}
-                                        onChange={() => toggleSavingThrow(attr as keyof typeof savingThrows)}
-                                        className="mr-2"
-                                    />
-                                    <label htmlFor={`res_${attr}`} className="text-sm text-gray-700">
-                                        {attr.charAt(0).toUpperCase() + attr.slice(1)}
-                                    </label>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Aptidões */}
-                    <div className="p-4 rounded-lg flex flex-col bg-gray-100 border-2 border-black " style={{ boxShadow: "0 0 0 4px white, 0 0 0 7px black" }}>
-                        <span className="text-sm font-semibold text-gray-700">APTIDÕES</span>
-                        <div className="flex flex-col mt-2 space-y-2">
-                            {Object.keys(skills).map((skill) => (
-                                <div className="flex items-center" key={skill}>
-                                    <input
-                                        type="checkbox"
-                                        id={`skill_${skill}`}
-                                        checked={skills[skill as keyof typeof skills]}
-                                        onChange={() => toggleSkill(skill as keyof typeof skills)}
-                                        className="mr-2"
-                                    />
-                                    <label htmlFor={`skill_${skill}`} className="text-sm text-gray-700">
-                                        {skill.charAt(0).toUpperCase() + skill.slice(1)}
-                                    </label>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                    <LeftSection
+                        attributes={attributes}
+                        savingThrows={savingThrows}
+                        skills={skills}
+                        toggleSavingThrow={toggleSavingThrow}
+                        toggleSkill={toggleSkill}
+                        proficiencyBonus={proficiencyBonus}
+                        inspiration={inspiration}
+                        toggleInspiration={toggleInspiration}
+                    />
                 </div>
-
                 {/* Meio */}
                 <div className="h-max p-4 rounded-lg space-y-3 bg-gray-100 border-2 border-black " style={{ boxShadow: "0 0 0 4px white, 0 0 0 7px black" }}>
                     {/* Classe de Armadura, Iniciativa, Deslocamento */}
                     <div className="flex justify-evenly items-center">
+                        {/* Classe de Armadura */}
                         <div className="bg-white p-2 rounded-lg text-center border-2 w-max h-max flex flex-col border-gray-300">
-                            <span className="text-lg font-bold">17</span>
+                            <span className="text-lg font-bold">{10 + dexModifier}</span> {/* CA = 10 + modificador de Destreza */}
                             <span className="text-xs text-gray-500">Classe de Armadura</span>
                         </div>
+
+                        {/* Iniciativa */}
                         <div className="bg-white p-2 rounded-lg text-center border-2 w-max h-max flex flex-col border-gray-300">
-                            <span className="text-lg font-bold">4.18</span>
+                            <span className="text-lg font-bold">{dexModifier}</span> {/* Iniciativa = modificador de Destreza */}
                             <span className="text-xs text-gray-500">Iniciativa</span>
                         </div>
+
+                        {/* Deslocamento */}
                         <div className="bg-white p-2 rounded-lg text-center border-2 w-max h-max flex flex-col border-gray-300">
-                            <span className="text-lg font-bold">30</span>
+                            <input
+                                type="number"
+                                className="w-12 text-center p-1 border-2 border-gray-300 rounded-lg bg-white"
+                                value={movement}
+                                onChange={(e) => setMovement(e.target.value)}
+                            />
                             <span className="text-xs text-gray-500">Deslocamento</span>
                         </div>
                     </div>
@@ -327,127 +257,34 @@ const CharacterForm: React.FC = () => {
                             <div className="text-center">
                                 <span className="text-xs text-gray-500">Vida Máxima</span>
                                 <div className="mt-1">
-                                    <span className="text-xl font-bold">100</span>
+                                    <input
+                                        type="number"
+                                        value={maxHp}
+                                        onChange={(e) => setMaxHp(parseInt(e.target.value))}
+                                        className="text-xl font-bold text-center"
+                                    />
                                 </div>
                             </div>
                             <div className="text-center">
                                 <span className="text-xs text-gray-500">Pontos de Vida</span>
                                 <div className="mt-1">
-                                    <span className="text-2xl font-bold">73</span>
+                                    <input
+                                        type="number"
+                                        value={currentHp}
+                                        onChange={(e) => setCurrentHp(parseInt(e.target.value))}
+                                        className="text-2xl font-bold text-center"
+                                    />
                                 </div>
                             </div>
                             <div className="text-center">
                                 <span className="text-xs text-gray-500">Pontos de Vida Temporários</span>
-                                <div className="mt-1 flex justify-center">
-                                    <span className="text-2xl font-bold text-green-600">+10</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Dados de Vida e Salvação contra a Morte */}
-                    <div className="bg-white pt-2 pb-2 rounded-lg flex justify-evenly items-center h-max border-2 border-gray-300">
-                        <div className="flex flex-col items-center w-max h-max space-y-2">
-                            <div className="text-center">
-                                <span className="text-xs text-gray-500">Total</span>
-                                <span className="text-lg font-bold">3</span>
-                            </div>
-                            <div className="flex justify-center items-center">
-                                <input
-                                    type="number"
-                                    value="2"
-                                    className="w-12 text-center p-1 border-2 border-gray-300 rounded-lg bg-white"
-                                />
-                            </div>
-                            <div className="text-center">
-                                <span className="text-xs text-gray-500">DADO DE VIDA (D12)</span>
-                            </div>
-                        </div>
-
-                        {/* Salvação contra a Morte */}
-                        <div className="flex flex-col justify-evenly items-center">
-                            <span className="text-sm font-semibold text-gray-700">Salvação contra a Morte</span>
-                            <div className="flex items-center space-x-4 mt-2">
-                                <div className="flex items-center justify-center gap-2">
-                                    <span>Sucesso</span>
-                                    {[1, 2, 3].map((i) => (
-                                        <div
-                                            key={i}
-                                            onClick={() => toggleSuccess(i)}
-                                            className={`w-4 h-4 bg-white border-2 border-gray-300 rounded-full cursor-pointer ${deathSaves.success >= i ? 'bg-green-500' : ''
-                                                }`}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-                            <div className="flex items-center space-x-4 mt-4">
-                                <div className="flex items-center space-x-2 ml-[18px]">
-                                    <span>Falha</span>
-                                    {[1, 2, 3].map((i) => (
-                                        <div
-                                            key={i}
-                                            onClick={() => toggleFail(i)}
-                                            className={`w-4 h-4 bg-white border-2 border-gray-300 rounded-full cursor-pointer ${deathSaves.fail >= i ? 'bg-red-500' : ''
-                                                }`}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Ataques & Conjuração */}
-                    <div className="bg-gray-200 h-max p-4 rounded-lg space-y-3">
-                        <div className="bg-white p-4 rounded-lg border-2 border-gray-300">
-                            <span className="text-sm font-semibold text-gray-700 text-center flex justify-center">
-                                Ataques & Conjuração
-                            </span>
-                            <div id="lista-ataques" className="space-y-3 mt-3">
-                                {[
-                                    { nome: 'Longbow', ataque: '+3', dano: '1d8+1 Piercing' },
-                                    { nome: 'LongSword', ataque: '+3', dano: '1d8+1 Piercing' }
-                                ].map((ataque, index) => (
-                                    <div key={index} className="grid grid-cols-3 gap-2">
-                                        <div className="text-center">
-                                            <span className="text-xs text-gray-500">Nome</span>
-                                            <div className="mt-1 bg-gray-200 rounded-xl w-max flex mx-auto p-2">
-                                                <span className="text-sm font-bold">{ataque.nome}</span>
-                                            </div>
-                                        </div>
-                                        <div className="text-center">
-                                            <span className="text-xs text-gray-500">ATQ</span>
-                                            <div className="mt-1 bg-gray-200 rounded-xl w-max flex mx-auto p-2">
-                                                <span className="text-sm font-bold">{ataque.ataque}</span>
-                                            </div>
-                                        </div>
-                                        <div className="text-center">
-                                            <span className="text-xs text-gray-500">Dano/Tipo</span>
-                                            <div className="mt-1 bg-gray-200 rounded-xl w-max flex mx-auto p-2">
-                                                <span className="text-sm font-bold">{ataque.dano}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Modificadores de Dano */}
-                    <div className="bg-white p-4 rounded-lg border-2 border-gray-300">
-                        <span className="text-sm font-semibold text-gray-700">Modificadores de Dano</span>
-                        <div className="space-y-3 mt-3">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="text-center">
-                                    <span className="text-xs text-gray-500">Dano Extra</span>
-                                    <div className="mt-1 bg-gray-200 rounded-xl w-max flex mx-auto p-2">
-                                        <span className="text-sm font-bold">+2 Fogo</span>
-                                    </div>
-                                </div>
-                                <div className="text-center">
-                                    <span className="text-xs text-gray-500">Redução de Dano</span>
-                                    <div className="mt-1 bg-gray-200 rounded-xl w-max flex mx-auto p-2">
-                                        <span className="text-sm font-bold">-1 Gelo</span>
-                                    </div>
+                                <div className="mt-1">
+                                    <input
+                                        type="number"
+                                        value={tempHp}
+                                        onChange={(e) => setTempHp(parseInt(e.target.value))}
+                                        className="text-2xl font-bold text-green-600 text-center"
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -457,9 +294,7 @@ const CharacterForm: React.FC = () => {
                     <div className="bg-white p-4 rounded-lg border-2 border-gray-300">
                         <span className="text-sm font-semibold text-gray-700">Inventário</span>
                         <div id="lista-inventario" className="space-y-3 mt-3">
-                            {[
-                                { item: 'Poção de Cura', quantidade: 3, peso: 0.5 }
-                            ].map((inventario, index) => (
+                            {inventory.map((inventario, index) => (
                                 <div key={index} className="grid grid-cols-3 gap-2">
                                     <div className="text-center">
                                         <span className="text-xs text-gray-500">Item</span>
@@ -486,10 +321,10 @@ const CharacterForm: React.FC = () => {
                 </div>
 
                 {/* Direita */}
-                <div className="space-y-4">
+                <div className="space-y-5">
                     <div className="space-y-4 mx-auto">
                         {/* Características */}
-                        <div className="bg-gray-200 p-5 rounded-lg">
+                        <div className="p-5 rounded-lg bg-gray-100 border-2 border-black " style={{ boxShadow: "0 0 0 4px white, 0 0 0 7px black" }}>
                             <span className="text-lg font-semibold text-gray-700 text-center flex justify-center">
                                 Características
                             </span>
@@ -546,7 +381,7 @@ Nothing can shake my optimistic attitude."
                     </div>
 
                     {/* Habilidades */}
-                    <div className="bg-gray-200 p-5 rounded-lg space-y-4 w-full">
+                    <div className="p-5 rounded-lg space-y-4 w-full bg-gray-100 border-2 border-black " style={{ boxShadow: "0 0 0 4px white, 0 0 0 7px black" }}>
                         <span className="text-lg font-semibold text-gray-700 text-center flex justify-center">
                             Habilidades
                         </span>
