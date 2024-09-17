@@ -249,7 +249,7 @@ const CharacterForm: React.FC = () => {
                                 type="number"
                                 className="w-12 text-center p-1 border-2 border-gray-300 rounded-lg bg-white"
                                 value={movement}
-                                onChange={(e) => setMovement(Number(e.target.value))}
+                                onChange={(e) => setMovement(e.target.value)}
                             />
                             <span className="text-xs text-gray-500">Deslocamento</span>
                         </div>
