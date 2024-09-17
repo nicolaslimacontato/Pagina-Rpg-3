@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import '../styles/CharacterForm.css';
 import { classesData } from '../data/classesData';
 import AttributesSection from './AttributesSection';
-import LeftSection from './LeftSection';
+import LeftSection from './LeftSection'; 
 
 const CharacterForm: React.FC = () => {
     const [characterName, setCharacterName] = useState<string>('');
@@ -18,13 +18,29 @@ const CharacterForm: React.FC = () => {
     const [maxHp, setMaxHp] = useState(100);
     const [currentHp, setCurrentHp] = useState(73);
     const [tempHp, setTempHp] = useState(10);
-    const [movement, setMovement] = useState<number>(30); // Valor inicial de Deslocamento
+    const [movement, setMovement] = useState<number>(30);
+    const [successes, setSuccesses] = useState([false, false, false]);
+    const [failures, setFailures] = useState([false, false, false]);
     const [habilidades, setHabilidades] = useState({
         habilidade1: false,
         habilidade2: false,
         habilidade3: false,
         habilidade4: false,
     });
+
+    // Função para alternar os sucessos
+    const toggleSuccess = (index: number) => {
+        const newSuccesses = successes.map((success, i) =>
+            i === index ? !success : success
+        );
+        setSuccesses(newSuccesses);
+    };
+
+    // Função para alternar as falhas
+    const toggleFail = (index: number) => {
+        const newFailures = failures.map((fail, i) => (i === index ? !fail : fail));
+        setFailures(newFailures);
+    };
 
     const toggleDetails = (key: string) => {
         setHabilidades((prev) => ({
@@ -57,20 +73,6 @@ const CharacterForm: React.FC = () => {
     const handleLevelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newLevel = parseInt(e.target.value, 10) || 1;
         setLevel(newLevel);
-    };
-
-    const toggleSuccess = (index: number) => {
-        setDeathSaves((prev) => ({
-            ...prev,
-            success: prev.success === index ? 0 : index,
-        }));
-    };
-
-    const toggleFail = (index: number) => {
-        setDeathSaves((prev) => ({
-            ...prev,
-            fail: prev.fail === index ? 0 : index,
-        }));
     };
 
     // Estado para Atributos
@@ -123,6 +125,8 @@ const CharacterForm: React.FC = () => {
         stealth: false,
         survival: false,
     });
+
+
 
     const toggleInspiration = () => setInspiration(!inspiration);
 
@@ -245,7 +249,7 @@ const CharacterForm: React.FC = () => {
                                 type="number"
                                 className="w-12 text-center p-1 border-2 border-gray-300 rounded-lg bg-white"
                                 value={movement}
-                                onChange={(e) => setMovement(e.target.value)}
+                                onChange={(e) => setMovement(Number(e.target.value))}
                             />
                             <span className="text-xs text-gray-500">Deslocamento</span>
                         </div>
@@ -253,7 +257,7 @@ const CharacterForm: React.FC = () => {
 
                     {/* Pontos de Vida */}
                     <div className="bg-white p-4 rounded-lg border-2 border-gray-300">
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className="flex flex-col gap-2">
                             <div className="text-center">
                                 <span className="text-xs text-gray-500">Vida Máxima</span>
                                 <div className="mt-1">
@@ -261,7 +265,7 @@ const CharacterForm: React.FC = () => {
                                         type="number"
                                         value={maxHp}
                                         onChange={(e) => setMaxHp(parseInt(e.target.value))}
-                                        className="text-xl font-bold text-center"
+                                        className="text-2xl font-bold text-center w-20"
                                     />
                                 </div>
                             </div>
@@ -272,7 +276,7 @@ const CharacterForm: React.FC = () => {
                                         type="number"
                                         value={currentHp}
                                         onChange={(e) => setCurrentHp(parseInt(e.target.value))}
-                                        className="text-2xl font-bold text-center"
+                                        className="text-2xl font-bold text-center w-20"
                                     />
                                 </div>
                             </div>
@@ -283,8 +287,70 @@ const CharacterForm: React.FC = () => {
                                         type="number"
                                         value={tempHp}
                                         onChange={(e) => setTempHp(parseInt(e.target.value))}
-                                        className="text-2xl font-bold text-green-600 text-center"
+                                        className="text-2xl font-bold text-green-600 text-center w-20"
                                     />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-white pt-2 pb-2 rounded-lg flex justify-evenly items-center h-max border-2 border-gray-300">
+                        {/* Dados de Vida */}
+                        <div className="flex flex-col items-center w-max h-max space-y-2">
+                            {/* Total (Nível do Personagem) */}
+                            <div className="text-center">
+                                <div>
+                                    <span className="text-xs text-gray-500 mr-1">Total</span>
+                                    <span className="text-lg font-bold">3</span>
+                                </div>
+                            </div>
+
+                            {/* Nível do Dado de Vida (Input Numérico) */}
+                            <div className="flex justify-center items-center">
+                                <input
+                                    type="number"
+                                    value="2"
+                                    className="w-12 text-center p-1 border-2 border-gray-300 rounded-lg bg-white"
+                                />
+                            </div>
+
+                            {/* Tipo de Dado de Vida */}
+                            <div className="text-center">
+                                <span className="text-xs text-gray-500">DADO DE VIDA (D12)</span>
+                            </div>
+                        </div>
+
+                        {/* Salvação contra a Morte */}
+                        <div className="flex flex-col justify-evenly items-center">
+                            <span className="text-sm font-semibold text-gray-700">Salvação contra a morte</span>
+
+                            {/* Sucessos */}
+                            <div className="flex items-center space-x-4 mt-2">
+                                <div className="flex items-center justify-center gap-2">
+                                    <span>Sucesso</span>
+                                    {[0, 1, 2].map((index) => (
+                                        <div
+                                            key={index}
+                                            onClick={() => toggleSuccess(index)}
+                                            className={`w-4 h-4 border-2 rounded-full cursor-pointer ${successes[index] ? 'bg-green-500' : 'bg-white'
+                                                } border-gray-300`}
+                                        ></div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Falhas */}
+                            <div className="flex items-center space-x-4 mt-4">
+                                <div className="flex items-center space-x-2 ml-[19px]">
+                                    <span>Falha</span>
+                                    {[0, 1, 2].map((index) => (
+                                        <div
+                                            key={index}
+                                            onClick={() => toggleFail(index)}
+                                            className={`w-4 h-4 border-2 rounded-full cursor-pointer ${failures[index] ? 'bg-red-500' : 'bg-white'
+                                                } border-gray-300`}
+                                        ></div>
+                                    ))}
                                 </div>
                             </div>
                         </div>
@@ -319,6 +385,8 @@ const CharacterForm: React.FC = () => {
                         </div>
                     </div>
                 </div>
+
+
 
                 {/* Direita */}
                 <div className="space-y-5">
