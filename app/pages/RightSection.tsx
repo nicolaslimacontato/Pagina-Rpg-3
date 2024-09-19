@@ -29,7 +29,7 @@ const RightSection: React.FC<RightSectionProps> = ({ className, level }) => {
         <div className="right-section">
             <div className="characteristic-box">
                 {/* Características */}
-                <div className="p-5 rounded-lg bg-gray-100 border-2 border-black" style={{ boxShadow: "0 0 0 4px white, 0 0 0 7px black" }}>
+                <div className="p-5 rounded-lg bg-gray-100">
                     <span className="text-lg font-semibold text-gray-700 text-center flex justify-center">Características</span>
 
                     {/* Traços de Personalidade */}
