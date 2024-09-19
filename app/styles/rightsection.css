@@ -1,0 +1,59 @@
+.right-section {
+    width: 100%;
+    max-width: 48rem; /* equivalente a max-w-3xl no Tailwind */
+}
+
+.characteristic-box {
+    padding: 1.25rem;
+    border-radius: 0.5rem;
+    background-color: #f3f4f6;
+    border: 2px solid black;
+    box-shadow: 0 0 0 4px white, 0 0 0 7px black;
+}
+
+.ability-box {
+    background-color: white;
+    border-radius: 0.5rem;
+    border: 2px solid #d1d5db;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.ability-header {
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.ability-name {
+    font-size: 0.875rem;
+    font-weight: bold;
+}
+
+.ability-toggle {
+    transition: .5;
+}
+
+.ability-toggle.open {
+    transform: rotate(180deg);
+}
+
+.ability-description {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height .5s
+}
+
+.ability-description.open {
+    max-height: 200px; /* Ajuste conforme necessário */
+    opacity: 1;
+}
+
+.ability-description p {
+    padding: 1rem;
+    font-size: 0.875rem;
+    color: #4b5563;
+}
