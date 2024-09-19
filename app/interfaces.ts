@@ -1,3 +1,10 @@
+export type Modifiers = {
+  dex: number;
+  con: number;
+  wis: number;
+  str: number;
+};
+
 export interface Classe {
   nome: string;
   dadoDeVida: string;
