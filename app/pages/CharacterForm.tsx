@@ -6,7 +6,7 @@ import { classesData } from '../data/classesData';
 import AttributesSection from './AttributesSection';
 import LeftSection from './LeftSection';
 import MidSection from './MidSection';
-import RightSection from './rightsection'; // ajuste o caminho se necessário
+import RightSection from './RightSection'; // ajuste o caminho se necessário
 
 // Definindo o tipo Modifiers no escopo global
 type Modifiers = {
