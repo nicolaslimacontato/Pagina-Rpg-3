@@ -1,9 +1,11 @@
 // Tipo para os modificadores
 export type Modifiers = {
-  dex: number;
+  for: number;
+  des: number;
   con: number;
-  wis: number;
-  str: number;
+  int: number;
+  sab: number;
+  car: number;
 };
 
 // Tipo para uma classe de personagem
@@ -55,7 +57,7 @@ export const classesData: CharacterClass[] = [
     dadoDeVida: "d10",
     vidaInicial: (modConstituicao: number) => calculateInitialHp("d10", modConstituicao),
     vidaPorLevel: (modConstituicao: number) => calculateHpPerLevel("d10", modConstituicao),
-    ca: (modifiers: Modifiers) => 10 + modifiers.dex,
+    ca: (modifiers: Modifiers) => 10 + modifiers.des,
     proficiencias: {
       armaduras: ["Leves", "Médias", "Pesadas"],
       armas: ["Simples", "Marciais"],
@@ -86,6 +88,7 @@ export const classesData: CharacterClass[] = [
     dadoDeVida: "d8",
     vidaInicial: (modConstituicao: number) => calculateInitialHp("d8", modConstituicao),
     vidaPorLevel: (modConstituicao: number) => calculateHpPerLevel("d8", modConstituicao),
+    ca: (modifiers: Modifiers) => 10 + modifiers.des,
     proficiencias: {
       armaduras: ["Leves"],
       armas: ["Simples", "Bestas de Mão"],
@@ -191,7 +194,7 @@ export const classesData: CharacterClass[] = [
     dadoDeVida: "d12",
     vidaInicial: (modConstituicao: number) => calculateInitialHp("d12", modConstituicao),
     vidaPorLevel: (modConstituicao: number) => calculateHpPerLevel("d12", modConstituicao),
-    ca: (modifiers: Modifiers) => 10 + Math.max(modifiers.dex + modifiers.con),
+    ca: (modifiers: Modifiers) => 10 + Math.max(modifiers.des + modifiers.con),
     proficiencias: {
       armaduras: ["Leves"],
       armas: ["Simples", "Bestas de Mão"],

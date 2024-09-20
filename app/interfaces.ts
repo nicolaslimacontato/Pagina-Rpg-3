@@ -1,8 +1,10 @@
 export type Modifiers = {
-  dex: number;
+  for: number;
+  des: number;
   con: number;
-  wis: number;
-  str: number;
+  int: number;
+  sab: number;
+  car: number;
 };
 
 export interface Classe {

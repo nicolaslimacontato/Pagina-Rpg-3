@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { classesData, CharacterClass } from '@/app/data/classesData'; // Ajuste o caminho conforme necessário
 import '../styles/rightsection.css';
 
-interface RightSectionProps {
-    className: string;
-    level: number;
+interface SecaoDireitaProps {
+    className: string; // Nome da classe
+    nivel: number; // Nível do personagem
 }
 
-const RightSection: React.FC<RightSectionProps> = ({ className, level }) => {
+const SecaoDireita: React.FC<SecaoDireitaProps> = ({ className, nivel }) => {
     const [openHabilidades, setOpenHabilidades] = useState<{ [key: string]: boolean }>({});
 
     const toggleHabilidade = (nomeHabilidade: string) => {
@@ -20,14 +20,14 @@ const RightSection: React.FC<RightSectionProps> = ({ className, level }) => {
     const classeSelecionada: CharacterClass | undefined = classesData.find(classe => classe.nome === className);
 
     if (!classeSelecionada) {
-        return <div>Classe não encontrada.</div>;
+        return <div className='characteristic-box h-max'><h2>Classe não selecionada.</h2></div>;
     }
 
-    const habilidadesFiltradas = classeSelecionada.habilidades.filter(habilidade => habilidade.nivel <= level);
+    const habilidadesFiltradas = classeSelecionada.habilidades.filter(habilidade => habilidade.nivel <= nivel);
 
     return (
         <div className="right-section">
-            <div className="characteristic-box">
+            <div className="characteristic-box -mt-4">
                 {/* Características */}
                 <div className="p-5 rounded-lg bg-gray-100 dark:bg-[#353535]">
                     <span className="text-lg font-semibold text-gray-700 dark:text-white text-center flex justify-center">Características</span>
@@ -37,7 +37,7 @@ const RightSection: React.FC<RightSectionProps> = ({ className, level }) => {
                         <textarea
                             className="w-full bg-transparent text-center text-gray-700 dark:text-white resize-none border-none outline-none"
                             rows={3}
-                            defaultValue="I see omens in every event and action. The gods try to speak to us, we just need to listen. Nothing can shake my optimistic attitude."
+                            defaultValue="Vejo presságios em cada evento e ação. Os deuses tentam falar conosco, só precisamos ouvir. Nada pode abalar minha atitude otimista."
                         />
                         <span className="text-xs text-gray-500 dark:text-white font-bold mt-2 flex justify-center">TRAÇOS DE PERSONALIDADE</span>
                     </div>
@@ -47,7 +47,7 @@ const RightSection: React.FC<RightSectionProps> = ({ className, level }) => {
                         <textarea
                             className="w-full bg-transparent text-center text-gray-700 dark:text-white resize-none border-none outline-none"
                             rows={3}
-                            defaultValue="Change. We must help bring about the changes the gods are constantly working in the world. (Chaotic)"
+                            defaultValue="Mudança. Precisamos ajudar a trazer as mudanças que os deuses estão constantemente fazendo no mundo. (Caótico)"
                         />
                         <span className="text-xs text-gray-500 dark:text-white font-bold mt-2 flex justify-center">IDEAIS</span>
                     </div>
@@ -57,7 +57,7 @@ const RightSection: React.FC<RightSectionProps> = ({ className, level }) => {
                         <textarea
                             className="w-full bg-transparent text-center text-gray-700 dark:text-white resize-none border-none outline-none"
                             rows={2}
-                            defaultValue="I will do anything to protect the temple where I served."
+                            defaultValue="Farei qualquer coisa para proteger o templo onde servi."
                         />
                         <span className="text-xs dark:text-white font-bold text-gray-500 flex justify-center mt-2">VÍNCULOS</span>
                     </div>
@@ -67,14 +67,14 @@ const RightSection: React.FC<RightSectionProps> = ({ className, level }) => {
                         <textarea
                             className="w-full bg-transparent text-center text-gray-700 dark:text-white resize-none border-none outline-none"
                             rows={2}
-                            defaultValue="My piety sometimes leads me to blindly trust those that profess faith in my god."
+                            defaultValue="Minha piedade às vezes me leva a confiar cegamente em quem professa fé em meu deus."
                         />
                         <span className="text-xs dark:text-white font-bold text-gray-500 flex justify-center mt-2">DEFEITOS</span>
                     </div>
                 </div>
             </div>
 
-            <div className="characteristic-box mt-5">
+            <div className="characteristic-box mt-6">
                 <span className="text-lg font-semibold text-gray-700 dark:text-white text-center flex justify-center mb-2">Habilidades</span>
 
                 {habilidadesFiltradas.map((habilidade, index) => (
@@ -98,4 +98,4 @@ const RightSection: React.FC<RightSectionProps> = ({ className, level }) => {
     );
 };
 
-export default RightSection;
+export default SecaoDireita;

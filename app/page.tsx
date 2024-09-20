@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import styles from "./page.module.css";
 import ClassesGrid from './pages/ClassesGrid';
-import CharacterForm from './pages/CharacterForm';
+import FormularioPersonagem from './pages/FormularioPersonagem';
 import { classesData } from './data/classesData';
 import DiceMenu from "./pages/DiceMenu";
 
@@ -14,7 +14,7 @@ export default function Home() {
     <div className="App">
       <DiceMenu/>
       <ClassesGrid />
-      <CharacterForm/>
+      <FormularioPersonagem/>
     </div>
   );
 }
