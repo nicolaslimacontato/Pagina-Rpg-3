@@ -1,0 +1,8 @@
+.custom-box-shadow {
+    box-shadow: 0 0 0 4px white, 0 0 0 7px black;
+}
+
+.dark .custom-box-shadow {
+    box-shadow: 0 0 0 4px black, 0 0 0 7px #353535;
+    /* Exemplo para modo escuro */
+}

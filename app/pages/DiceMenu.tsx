@@ -32,7 +32,7 @@ const DiceMenu = () => {
 
                 {/* Menu de Dados */}
                 {isOpen && (
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 -mb-4 bg-white rounded-lg shadow-lg p-6 pt-10 w-max text-center">
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 -mb-4 bg-white dark:bg-[#353535] rounded-lg shadow-lg p-6 pt-10 w-max text-center">
                         {result !== null && (
                             <div
                                 className={`absolute bottom-full left-1/2 transform -translate-x-1/2 rounded-full -mb-8 shadow-2xl p-4 w-12 h-12 flex items-center justify-center text-lg font-bold ${
@@ -49,7 +49,7 @@ const DiceMenu = () => {
                                 <button
                                     key={sides}
                                     onClick={() => rollDice(sides)}
-                                    className="bg-gray-200 p-2 rounded hover:bg-gray-300 w-max"
+                                    className="bg-gray-200 dark:bg-[#424242] p-2 rounded hover:bg-gray-300 w-max"
                                 >
                                     d{sides}
                                 </button>

@@ -31,7 +31,7 @@ const ClassCard = ({
           />
           <div className="flex-1 max-w-52">
             <h3 className="text-xl font-bold">{className}</h3>
-            <div className="text-sm text-gray-600 dark:text-gray-400 border-b-red-500 border-b-2">
+            <div className="text-sm text-gray-600 dark:text-gray-400 border-b-[#be161d] border-b-2">
               {source}
             </div>
           </div>
@@ -52,7 +52,7 @@ const ClassCard = ({
           href={learnMoreLink}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block bg-red-500 text-white py-2 px-4 rounded-full hover:bg-red-600 transition duration-300"
+          className="inline-block bg-[#be161d] text-white py-2 px-4 rounded-full hover:bg-red-800 transition duration-300"
         >
           Saiba Mais
         </a>

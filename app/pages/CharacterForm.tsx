@@ -212,13 +212,13 @@ const CharacterForm: React.FC = () => {
 
     return (
         <div className="p-3 flex flex-col items-center box-content">
-            <h1 className='text-6xl my-8 text-red-500'>Ficha</h1>
+            <h1 className='text-6xl my-8 text-[#be161d]'>Ficha</h1>
             {/* Cabeça */}
             <div className="header bg-no-repeat bg-cover flex items-center">
                 <div className="nomebox">
                     <input
                         type="text"
-                        className="w-10/12 h-7 bg-[#f5f5f5] p-3 text-center mt-8"
+                        className="w-10/12 h-7 bg-gray-200 dark:bg-[#353535] dark:text-white p-3 text-center mt-8"
                         placeholder="Nome do Personagem"
                         value={characterName}
                         onChange={(e) => setCharacterName(e.target.value)}
@@ -228,7 +228,7 @@ const CharacterForm: React.FC = () => {
                     <div className="grid grid-cols-3 gap-x-2 gap-y-1 w-full">
                         <input
                             type="text"
-                            className="bg-[#f5f5f5] p-1 text-center text-xs h-7"
+                            className="bg-gray-200 dark:bg-[#353535] dark:text-white p-1 text-center text-xs h-7"
                             placeholder="Raça"
                             value={race}
                             onChange={(e) => setRace(e.target.value)}
@@ -236,7 +236,7 @@ const CharacterForm: React.FC = () => {
 
                         {/* Campo de seleção para as classes */}
                         <select
-                            className="bg-[#f5f5f5] p-1 text-center text-xs h-7"
+                            className="bg-gray-200 dark:bg-[#353535] dark:text-white p-1 text-center text-xs h-7"
                             value={charClass}
                             onChange={(e) => setCharClass(e.target.value)}
                         >
@@ -251,7 +251,7 @@ const CharacterForm: React.FC = () => {
                         {/* Campo de entrada para o nível */}
                         <input
                             type="number"
-                            className="bg-[#f5f5f5] p-1 text-center text-xs h-7"
+                            className="bg-gray-200 dark:bg-[#353535] dark:text-white p-1 text-center text-xs h-7"
                             placeholder="Nível"
                             value={level}
                             onChange={(e) => setLevel(parseInt(e.target.value, 10) || 1)}
@@ -261,21 +261,21 @@ const CharacterForm: React.FC = () => {
 
                         <input
                             type="text"
-                            className="bg-[#f5f5f5] p-1 text-center text-xs h-7"
+                            className="bg-gray-200 dark:bg-[#353535] dark:text-white p-1 text-center text-xs h-7"
                             placeholder="Antecedente"
                             value={background}
                             onChange={(e) => setBackground(e.target.value)}
                         />
                         <input
                             type="text"
-                            className="bg-[#f5f5f5] p-1 text-center text-xs h-7"
+                            className="bg-gray-200 dark:bg-[#353535] dark:text-white p-1 text-center text-xs h-7"
                             placeholder="Alinhamento"
                             value={alignment}
                             onChange={(e) => setAlignment(e.target.value)}
                         />
                         <input
                             type="text"
-                            className="bg-[#f5f5f5] p-1 text-center text-xs h-7"
+                            className="bg-gray-200 dark:bg-[#353535] dark:text-white p-1 text-center text-xs h-7"
                             placeholder="XP"
                             value={xp}
                             onChange={(e) => setXp(e.target.value)}

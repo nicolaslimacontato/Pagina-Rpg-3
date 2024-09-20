@@ -1,4 +1,5 @@
 import React from 'react';
+import '../styles/boxshadows.css';
 
 type AttributesSectionProps = {
   attributes: { [key: string]: number };
@@ -18,10 +19,10 @@ const AttributeControl: React.FC<{
   handleInputChange: (newValue: string) => void;
 }> = ({ attr, attributeValue, modifier, onDecrease, onIncrease, handleInputChange }) => (
   <div className="text-center w-full sm:w-auto flex-1">
-    <span className="text-sm font-semibold text-gray-700 mb-1 block">
+    <span className="text-sm font-semibold text-gray-700 dark:text-white mb-1 block">
       {attr.toUpperCase()}
     </span>
-    <div className="relative w-20 h-20 mx-auto flex flex-col justify-center items-center bg-white rounded-full border-2 border-gray-300">
+    <div className="relative w-20 h-20 mx-auto flex flex-col justify-center items-center bg-white dark:bg-[#2a2a2a] rounded-full border-2 border-gray-300">
       <span className="text-xl font-bold">
         {modifier >= 0 ? `+${modifier}` : modifier}
       </span>
@@ -64,9 +65,7 @@ const AttributesSection: React.FC<AttributesSectionProps> = ({ attributes, adjus
   return (
     <div className="w-full mt-8 mx-auto container">
       <div
-        className="bg-gray-100 border-2 border-black p-4 rounded-lg"
-        style={{ boxShadow: '0 0 0 4px white, 0 0 0 7px black' }}
-      >
+        className="bg-gray-100 border-2 dark:bg-[#353535] border-black dark:border-[#353535] p-4 rounded-lg custom-box-shadow">
         <div className="flex flex-wrap justify-around gap-4">
           {Object.entries(attributes).map(([attr, attributeValue]) => {
             const modifier = calculateModifier(attributeValue);
