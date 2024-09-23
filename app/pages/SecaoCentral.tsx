@@ -1,6 +1,20 @@
 import React, { useState } from 'react';
 import '../styles/boxshadows.css';
 
+interface Proficiencia {
+    nome: string;
+    tipo: 'Idioma' | 'Ferramenta' | 'Perícia';
+    adquirida: boolean;
+}
+
+interface SecaoProficienciaProps {
+    classe: string;
+    raca: string;
+    antecedentes: string;
+    aoAlterarProficiencias: (proficiencias: Proficiencia[]) => void;
+}
+
+
 interface Item {
     item: string;
     quantidade: number;
@@ -17,10 +31,11 @@ interface PropriedadesSecaoCentral {
     sucessos: boolean[];
     falhas: boolean[];
     inventario: Item[];
+    aoAdicionarItem: (novoItem: Item) => void;
+    aoRemoverItem: (indice: number) => void; // Adiciona função para remover itens
     alternarSucesso: (indice: number) => void;
     alternarFalha: (indice: number) => void;
     aoAlterarMovimento: (valor: number) => void;
-    aoAdicionarItem: (novoItem: Item) => void;
     aoAlterarHpMaximo: (valor: number) => void;
     aoAlterarHpAtual: (valor: number) => void;
     aoAlterarHpTemporario: (valor: number) => void;
@@ -35,12 +50,13 @@ const SecaoCentral: React.FC<PropriedadesSecaoCentral> = ({
     hpTemporario,
     sucessos,
     falhas,
-    inventario,
     alternarSucesso,
     alternarFalha,
     aoAlterarMovimento,
     movimento,
+    inventario,
     aoAdicionarItem,
+    aoRemoverItem,
     aoAlterarHpMaximo,
     aoAlterarHpTemporario,
     classeDeArmadura,
@@ -49,6 +65,8 @@ const SecaoCentral: React.FC<PropriedadesSecaoCentral> = ({
     const [modalAberto, setModalAberto] = useState(false);
     const [estaHealando, setEstaHealando] = useState(true); // true = cura, false = dano
     const [quantidadeAlteracaoHp, setQuantidadeAlteracaoHp] = useState(0);
+    const [novoItem, setNovoItem] = useState<Item>({ item: '', quantidade: 1, peso: 0 });
+
 
     const abrirModal = (acaoHeal: boolean) => {
         setEstaHealando(acaoHeal);
@@ -69,9 +87,12 @@ const SecaoCentral: React.FC<PropriedadesSecaoCentral> = ({
         fecharModal(); // Fecha o modal após aplicar a mudança
     };
 
+    // Manipula a adição de um novo item
     const manipularAdicionarItem = () => {
-        const novoItem = { item: 'Nova Arma', quantidade: 1, peso: 5 }; // Exemplo de novo item
-        aoAdicionarItem(novoItem);
+        if (novoItem.item.trim() !== '' && novoItem.quantidade > 0) {
+            aoAdicionarItem(novoItem); // Passa o novo item para a função do pai
+            setNovoItem({ item: '', quantidade: 1, peso: 0 }); // Reseta o estado após adicionar
+        }
     };
 
     const manipularResetarHp = () => {
@@ -90,7 +111,7 @@ const SecaoCentral: React.FC<PropriedadesSecaoCentral> = ({
     const estaMorto = falhas.filter(Boolean).length >= 3;
 
     return (
-        <div className="h-max p-4 gap-2 rounded-lg space-y-3 bg-gray-100 dark:bg-[#353535] border-2 border-black custom-box-shadow">
+        <div className="h-max p-4 gap-2 rounded-lg space-y-3 w-max bg-gray-100 dark:bg-[#353535] border-2 border-black custom-box-shadow">
             {/* Classe de Armadura, Iniciativa, Deslocamento */}
             <div className="flex justify-evenly items-center gap-3">
                 {/* Classe de Armadura */}
@@ -234,9 +255,8 @@ const SecaoCentral: React.FC<PropriedadesSecaoCentral> = ({
                             {sucessos.map((sucesso, indice) => (
                                 <button
                                     key={indice}
-                                    className={`w-6 h-6 rounded-full border-2 font-bold ${
-                                        sucesso ? 'bg-green-500' : 'bg-gray-200'
-                                    }`}
+                                    className={`w-6 h-6 rounded-full border-2 font-bold ${sucesso ? 'bg-green-500' : 'bg-gray-200'
+                                        }`}
                                     onClick={() => alternarSucesso(indice)}
                                 />
                             ))}
@@ -248,9 +268,8 @@ const SecaoCentral: React.FC<PropriedadesSecaoCentral> = ({
                             {falhas.map((falha, indice) => (
                                 <button
                                     key={indice}
-                                    className={`w-6 h-6 rounded-full border-2 font-bold ${
-                                        falha ? 'bg-red-500' : 'bg-gray-200'
-                                    }`}
+                                    className={`w-6 h-6 rounded-full border-2 font-bold ${falha ? 'bg-red-500' : 'bg-gray-200'
+                                        }`}
                                     onClick={() => alternarFalha(indice)}
                                 />
                             ))}
@@ -268,33 +287,61 @@ const SecaoCentral: React.FC<PropriedadesSecaoCentral> = ({
                     </button>
                 </div>
             </div>
-
-           {/* Inventário */}
-           <div className="bg-white dark:bg-[#2a2a2a] p-4 rounded-lg border-2 border-gray-300">
-                <div className="text-center mb-2">
-                    <span className="text-xs text-gray-500 dark:text-white font-bold">Inventário</span>
-                </div>
-                <ul className="space-y-2">
-                    {inventario.map((item, indice) => (
-                        <li key={indice} className="flex justify-between items-center border-b border-gray-300 pb-2">
-                            <div className="flex flex-col">
-                                <span className="font-bold">{item.item}</span>
-                                <span className="text-sm text-gray-500 dark:text-white">Quantidade: {item.quantidade}</span>
-                                <span className="text-sm text-gray-500 dark:text-white">Peso: {item.peso}kg</span>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
+            {/* Inventário */}
+            <div className="text-center mb-2 w-max mx-auto">
+                <span className="text-2xl text-gray-500 text-center dark:text-white font-bold">Inventário</span>
             </div>
+            <ul className="space-y-2">
+                {inventario.map((item, indice) => (
+                    <li key={indice} className="flex justify-between items-center border-b border-gray-300 pb-2">
+                        <div className="flex flex-col">
+                            <span className="font-bold">{item.item}</span>
+                            <span className="text-sm text-gray-500 dark:text-white">Quantidade: {item.quantidade}</span>
+                            <span className="text-sm text-gray-500 dark:text-white">Peso: {item.peso}kg</span>
+                        </div>
+                        {/* Botão para remover item */}
+                        <button
+                            className="bg-red-500 text-white px-2 py-1 rounded"
+                            onClick={() => aoRemoverItem(indice)}
+                        >
+                            Remover
+                        </button>
+                    </li>
+                ))}
+            </ul>
 
-            {/* Botão Adicionar Item */}
-            <div className="text-center mt-2">
-                <button
-                    className="bg-green-500 text-white px-4 py-2 rounded"
-                    onClick={manipularAdicionarItem}
-                >
-                    Adicionar Item
-                </button>
+            {/* Adicionar Item */}
+            <div className="mt-4">
+                <h3 className="text-center font-bold">Adicionar Item</h3>
+                <div className="space-y-2 mt-2 flex flex-col">
+                    <input
+                        type="text"
+                        placeholder="Nome do item"
+                        value={novoItem.item}
+                        onChange={(e) => setNovoItem({ ...novoItem, item: e.target.value })}
+                        className="w-full p-2 rounded bg-gray-100 dark:bg-[#353535] border"
+                    />
+                    <input
+                        type="number"
+                        placeholder="Quantidade"
+                        value={novoItem.quantidade}
+                        onChange={(e) => setNovoItem({ ...novoItem, quantidade: parseInt(e.target.value, 10) })}
+                        className="w-full p-2 rounded bg-gray-100 dark:bg-[#353535] border"
+                    />
+                    <input
+                        type="number"
+                        placeholder="Peso (kg)"
+                        value={novoItem.peso}
+                        onChange={(e) => setNovoItem({ ...novoItem, peso: parseFloat(e.target.value) })}
+                        className="w-full p-2 rounded bg-gray-100 dark:bg-[#353535] border"
+                    />
+                    <button
+                        className="bg-green-500 text-white px-4 py-2 rounded w-full"
+                        onClick={manipularAdicionarItem}
+                    >
+                        Adicionar Item
+                    </button>
+                </div>
             </div>
         </div>
     );

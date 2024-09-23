@@ -1,4 +1,5 @@
-// Tipo para os modificadores
+import { Idiomas, Ferramentas, Pericias } from './enums'; // Ajuste para importar os seus enums corretos
+
 export type Modifiers = {
   for: number;
   des: number;
@@ -18,9 +19,9 @@ export type CharacterClass = {
   proficiencias: {
     armaduras: string[];
     armas: string[];
-    ferramentas: string[];
+    ferramentas: Ferramentas[];
     testesDeResistencia: string[];
-    pericias: string[];
+    pericias: Pericias[];
   };
   equipamento: string[][];
   habilidades: {
@@ -61,9 +62,9 @@ export const classesData: CharacterClass[] = [
     proficiencias: {
       armaduras: ["Leves", "Médias", "Pesadas"],
       armas: ["Simples", "Marciais"],
-      ferramentas: [],
+      ferramentas: [], // Usando enum Ferramentas
       testesDeResistencia: ["Força", "Constituição"],
-      pericias: ["Atletismo", "Intimidação"]
+      pericias: [Pericias.Atletismo, Pericias.Intimidacao] // Usando enum Pericias
     },
     equipamento: [
       ["Espada Longa", "Escudo"],
@@ -92,9 +93,9 @@ export const classesData: CharacterClass[] = [
     proficiencias: {
       armaduras: ["Leves"],
       armas: ["Simples", "Bestas de Mão"],
-      ferramentas: ["Instrumentos Musicais"],
+      ferramentas: [Ferramentas.FerramentasDeInstrumentoFlauta],
       testesDeResistencia: ["Destreza", "Carisma"],
-      pericias: ["Performance", "Persuasão"]
+      pericias: [Pericias.Atuacao, Pericias.Persuasao]
     },
     equipamento: [["Rapieira", "Lira"], ["Pacote de Diplomata"]],
     habilidades: [
@@ -198,9 +199,9 @@ export const classesData: CharacterClass[] = [
     proficiencias: {
       armaduras: ["Leves"],
       armas: ["Simples", "Bestas de Mão"],
-      ferramentas: ["Instrumentos Musicais"],
+      ferramentas: [Ferramentas.FerramentasDeInstrumentoFlauta],
       testesDeResistencia: ["Destreza", "Carisma"],
-      pericias: ["Performance", "Persuasão"]
+      pericias: [Pericias.Atuacao, Pericias.Persuasao]
     },
     equipamento: [["Rapieira", "Lira"], ["Pacote de Diplomata"]],
     habilidades: [

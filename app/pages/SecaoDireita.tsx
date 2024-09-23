@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { classesData, CharacterClass } from '@/app/data/classesData'; // Ajuste o caminho conforme necessário
+import { racasData, raca } from '../data/racasData'; // Importar dados das raças
 import '../styles/rightsection.css';
 
 interface SecaoDireitaProps {
     className: string; // Nome da classe
     nivel: number; // Nível do personagem
+    racaName: string; // Nome da raça
+    subclasseName: string; // Nome da subclasse
 }
 
-const SecaoDireita: React.FC<SecaoDireitaProps> = ({ className, nivel }) => {
+const SecaoDireita: React.FC<SecaoDireitaProps> = ({ className, nivel, racaName, subclasseName }) => {
     const [openHabilidades, setOpenHabilidades] = useState<{ [key: string]: boolean }>({});
 
     const toggleHabilidade = (nomeHabilidade: string) => {
@@ -17,13 +20,30 @@ const SecaoDireita: React.FC<SecaoDireitaProps> = ({ className, nivel }) => {
         }));
     };
 
+    // Encontrar a classe selecionada
     const classeSelecionada: CharacterClass | undefined = classesData.find(classe => classe.nome === className);
+    const subclasseSelecionada = classeSelecionada?.subclasses.find(subclasse => subclasse.nome === subclasseName); // Verifica se a subclasse existe
+    const racaSelecionada: raca | undefined = racasData.find(raca => raca.nome === racaName);
 
-    if (!classeSelecionada) {
-        return <div className='characteristic-box h-max'><h2>Classe não selecionada.</h2></div>;
+    if (!classeSelecionada || !racaSelecionada || !subclasseSelecionada) {
+        return <div className='characteristic-box h-max font-bold text-xl'><h2>Selecione as informações a cima para ver suas habilidades e antecedentes</h2></div>;
     }
 
-    const habilidadesFiltradas = classeSelecionada.habilidades.filter(habilidade => habilidade.nivel <= nivel);
+    const habilidadesFiltradasClasse = classeSelecionada.habilidades.filter(habilidade => habilidade.nivel <= nivel);
+    const habilidadesSubclasse = subclasseSelecionada.habilidades.filter(habilidade => habilidade.nivel <= nivel);
+    
+    const habilidadesCombinadas = [
+        ...habilidadesFiltradasClasse.map(habilidade => ({
+            ...habilidade,
+            tipo: 'Classe',
+        })),
+        ...habilidadesSubclasse.map(habilidade => ({
+            ...habilidade,
+            tipo: 'Subclasse',
+        }))
+    ];
+
+    const habilidadesRaca = racaSelecionada.habilidades;
 
     return (
         <div className="right-section">
@@ -74,10 +94,26 @@ const SecaoDireita: React.FC<SecaoDireitaProps> = ({ className, nivel }) => {
                 </div>
             </div>
 
+            {/* Habilidades da Classe */}
             <div className="characteristic-box mt-6">
-                <span className="text-lg font-semibold text-gray-700 dark:text-white text-center flex justify-center mb-2">Habilidades</span>
+                <span className="text-lg font-semibold text-gray-700 dark:text-white text-center flex justify-center mb-2">Habilidades da Classe</span>
+                {habilidadesCombinadas.map((habilidade, index) => (
+                    <div key={index} className="ability-box dark:text-white">
+                        <div className="ability-header" onClick={() => toggleHabilidade(habilidade.nome)}>
+                            <span className="ability-name">{habilidade.nome} <br/> <span className='text-xs text-[#be161d]'>Origem: {habilidade.tipo}</span></span>
+                            <span className={`ability-toggle ${openHabilidades[habilidade.nome] ? 'open' : ''}`}>&#x25BC;</span>
+                        </div>
+                        <div className={`ability-description ${openHabilidades[habilidade.nome] ? 'open' : ''}`}>
+                            <p>{habilidade.descricao}</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
 
-                {habilidadesFiltradas.map((habilidade, index) => (
+            {/* Habilidades da Raça */}
+            <div className="characteristic-box mt-6">
+                <span className="text-lg font-semibold text-gray-700 dark:text-white text-center flex justify-center mb-2">Habilidades da Raça</span>
+                {habilidadesRaca.map((habilidade, index) => (
                     <div key={index} className="ability-box dark:text-white">
                         <div 
                             className="ability-header"

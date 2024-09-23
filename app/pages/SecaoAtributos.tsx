@@ -1,5 +1,6 @@
 import React from 'react';
 import '../styles/boxshadows.css';
+import { racasData } from '../data/racasData';
 
 type PropsSecaoAtributos = {
   atributos: { [chave: string]: number };

@@ -1,8 +1,9 @@
 import React from 'react';
 import '../styles/boxshadows.css';
+import { Pericias, Ferramentas, Idiomas } from '../data/enums'; // Importar os Enums
 
 type TestesDeResistencia = Record<string, boolean>;
-type Aptidoes = Record<string, boolean>;
+type Aptidoes = Record<Pericias, boolean>; // Ajuste para usar Pericias como chave
 
 type Atributos = {
   forca: number;
@@ -13,19 +14,40 @@ type Atributos = {
   carisma: number;
 };
 
+type Proficiencias = {
+  idiomas: Record<string, boolean>;
+  ferramentas: Record<string, boolean>;
+};
+
+type Personagem = {
+  atributos: Atributos;
+  aptidoes: Aptidoes;
+  testesDeResistencia: TestesDeResistencia;
+  proficiencias: Proficiencias; // Novo campo
+};
+
 type Props = {
   atributos: Atributos;
   testesDeResistencia: TestesDeResistencia;
   aptidoes: Aptidoes;
   alternarTesteDeResistencia: (atributo: keyof TestesDeResistencia) => void;
-  alternarAptidao: (aptidao: keyof Aptidoes) => void;
+  alternarAptidao: (aptidao: Pericias) => void;  // Mudança aqui
   bonusDeProficiencia: number;
   alternarInspiracao: () => void;
   inspiracao: boolean;
 };
 
 // Função de cálculo do modificador movida para fora do componente para evitar recriação
-const calcularModificador = (valor: number): number => Math.floor((valor - 10) / 2);
+const calcularModificador = (valor: number): number => {
+  if (isNaN(valor)) return 0;
+  return Math.floor((valor - 10) / 2);
+};
+
+// Função para verificar se é um valor válido do enum Pericias
+const isPericia = (valor: any): valor is Pericias => {
+  return Object.values(Pericias).includes(valor);
+};
+
 
 const SecaoEsquerda: React.FC<Props> = ({
   atributos,
@@ -38,31 +60,31 @@ const SecaoEsquerda: React.FC<Props> = ({
   inspiracao,
 }) => {
   // Mapeamento de aptidões para os atributos correspondentes
-  const mapaDeAptidoesParaAtributos: Record<string, keyof Atributos> = {
-    acrobacia: 'destreza',
-    manejoDeAnimais: 'sabedoria',
-    arcanismo: 'inteligencia',
-    atletismo: 'forca',
-    engano: 'carisma',
-    historia: 'inteligencia',
-    intuicao: 'sabedoria',
-    intimidacao: 'carisma',
-    investigacao: 'inteligencia',
-    medicina: 'sabedoria',
-    natureza: 'inteligencia',
-    percepcao: 'sabedoria',
-    atuacao: 'carisma',
-    persuasao: 'carisma',
-    religiao: 'inteligencia',
-    prestidigitacao: 'destreza',
-    furtividade: 'destreza',
-    sobrevivencia: 'sabedoria',
+  const mapaDeAptidoesParaAtributos: Record<Pericias, keyof Atributos> = {
+    [Pericias.Acrobacia]: 'destreza',
+    [Pericias.Arcanismo]: 'inteligencia',
+    [Pericias.Atletismo]: 'forca',
+    [Pericias.Atuacao]: 'carisma',
+    [Pericias.Enganacao]: 'carisma',
+    [Pericias.Historia]: 'inteligencia',
+    [Pericias.Intimidacao]: 'carisma',
+    [Pericias.Intuicao]: 'sabedoria',
+    [Pericias.Investigacao]: 'inteligencia',
+    [Pericias.Medicina]: 'sabedoria',
+    [Pericias.Natureza]: 'inteligencia',
+    [Pericias.Percepcao]: 'sabedoria',
+    [Pericias.Persuasao]: 'carisma',
+    [Pericias.Prestidigitacao]: 'destreza',
+    [Pericias.Religiao]: 'inteligencia',
+    [Pericias.Sobrevivencia]: 'sabedoria',
+    [Pericias.Furtividade]: 'destreza',
+    [Pericias.AdestrarAnimais]: 'sabedoria',
   };
 
   // Cálculo do modificador da aptidão
-  const obterModificadorDeAptidao = (aptidao: keyof Aptidoes): number => {
-    const atributo = mapaDeAptidoesParaAtributos[aptidao] || 'destreza';
-    const modificadorBase = calcularModificador(atributos[atributo]);
+  const obterModificadorDeAptidao = (aptidao: Pericias): number => {
+    const atributo = mapaDeAptidoesParaAtributos[aptidao];
+    const modificadorBase = calcularModificador(atributos[atributo] || 0);
     return aptidoes[aptidao] ? modificadorBase + bonusDeProficiencia : modificadorBase;
   };
 
@@ -76,11 +98,8 @@ const SecaoEsquerda: React.FC<Props> = ({
     <div className="flex-1 space-y-6">
       {/* Bônus de Proficiência e Inspiração */}
       <div className="flex gap-8 justify-center items-center mx-auto w-max">
-        <div
-          className="p-3 rounded-lg flex items-center justify-evenly bg-gray-100 dark:bg-[#353535] border-2 border-black custom-box-shadow"
-          aria-label="Bônus de Proficiência"
-          title="Bônus de Proficiência"
-        >
+        {/* Bônus de Proficiência */}
+        <div className="p-3 rounded-lg flex items-center justify-evenly bg-gray-100 dark:bg-[#353535] border-2 border-black custom-box-shadow">
           <div className="flex flex-col justify-center items-center">
             <div className="bg-white dark:bg-[#2a2a2a] rounded-full w-12 h-12 flex items-center justify-center border-2 border-gray-300">
               <span className="text-xl font-bold">{bonusDeProficiencia}</span>
@@ -88,6 +107,8 @@ const SecaoEsquerda: React.FC<Props> = ({
             <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 mt-2">Bônus de Proficiência</span>
           </div>
         </div>
+
+        {/* Inspiração */}
         <div
           className={`p-3 rounded-lg flex items-center justify-evenly bg-gray-100 dark:bg-[#353535] border-2 border-black cursor-pointer custom-box-shadow ${inspiracao ? 'bg-gray-200 dark:bg-gray-700' : ''}`}
           onClick={alternarInspiracao}
@@ -111,59 +132,33 @@ const SecaoEsquerda: React.FC<Props> = ({
         </div>
       </div>
 
-      {/* Testes de Resistência */}
-      <div className="p-4 rounded-lg flex flex-col bg-gray-100 dark:bg-[#353535] border-2 border-black custom-box-shadow">
-        <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">TESTES DE RESISTÊNCIA</span>
-        <div className="flex flex-col mt-2 space-y-2">
-          {Object.keys(atributos).map((atributo) => {
-            const modificador = obterModificadorDeTesteDeResistencia(atributo as keyof Atributos);
-            return (
-              <div className="flex items-center" key={atributo}>
-                <div className="w-10 h-10 bg-white dark:bg-[#2a2a2a] border-2 border-gray-300 rounded-full flex justify-center items-center mr-2">
-                  <span className="text-lg font-bold">{modificador >= 0 ? `+${modificador}` : modificador}</span>
-                </div>
-                <input
-                  type="checkbox"
-                  id={`res_${atributo}`}
-                  checked={testesDeResistencia[atributo as keyof TestesDeResistencia]}
-                  onChange={() => alternarTesteDeResistencia(atributo as keyof TestesDeResistencia)}
-                  className="mr-2"
-                  aria-label={`Alternar teste de resistência para ${atributo}`}
-                />
-                <label htmlFor={`res_${atributo}`} className="text-sm text-gray-700 dark:text-gray-300">
-                  {atributo.charAt(0).toUpperCase() + atributo.slice(1)}
-                </label>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
       {/* Aptidões */}
       <div className="p-4 rounded-lg flex flex-col bg-gray-100 dark:bg-[#353535] border-2 border-black custom-box-shadow">
         <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">APTIDÕES</span>
         <div className="flex flex-col mt-2 space-y-2">
-          {Object.keys(aptidoes).map((aptidao) => {
-            const modificador = obterModificadorDeAptidao(aptidao as keyof Aptidoes);
-            return (
-              <div className="flex items-center" key={aptidao}>
-                <div className="w-10 h-10 bg-white dark:bg-[#2a2a2a] border-2 border-gray-300 rounded-full flex justify-center items-center mr-2">
-                  <span className="text-lg font-bold">{modificador >= 0 ? `+${modificador}` : modificador}</span>
+          {Object.keys(Pericias)
+            .filter(key => isNaN(Number(key))) // Filtra somente as chaves que são strings (não numéricas)
+            .map((aptidao) => {
+              const modificador = obterModificadorDeAptidao(Pericias[aptidao as keyof typeof Pericias]);
+              return (
+                <div className="flex items-center" key={aptidao}>
+                  <div className="w-10 h-10 bg-white dark:bg-[#2a2a2a] border-2 border-gray-300 rounded-full flex justify-center items-center mr-2">
+                    <span className="text-lg font-bold">{modificador >= 0 ? `+${modificador}` : modificador}</span>
+                  </div>
+                  <input
+                    type="checkbox"
+                    id={`aptidao_${aptidao}`}
+                    checked={aptidoes[Pericias[aptidao as keyof typeof Pericias]]}
+                    onChange={() => alternarAptidao(Pericias[aptidao as keyof typeof Pericias])}
+                    className="mr-2"
+                    aria-label={`Alternar proficiência de aptidão para ${aptidao}`}
+                  />
+                  <label htmlFor={`aptidao_${aptidao}`} className="text-sm text-gray-700 dark:text-gray-300">
+                    {String(aptidao).replace(/([A-Z])/g, ' $1').trim()}
+                  </label>
                 </div>
-                <input
-                  type="checkbox"
-                  id={`aptidao_${aptidao}`}
-                  checked={aptidoes[aptidao as keyof Aptidoes]}
-                  onChange={() => alternarAptidao(aptidao as keyof Aptidoes)}
-                  className="mr-2"
-                  aria-label={`Alternar proficiência de aptidão para ${aptidao}`}
-                />
-                <label htmlFor={`aptidao_${aptidao}`} className="text-sm text-gray-700 dark:text-gray-300">
-                  {aptidao.replace(/([A-Z])/g, ' $1').trim()}
-                </label>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
       </div>
     </div>

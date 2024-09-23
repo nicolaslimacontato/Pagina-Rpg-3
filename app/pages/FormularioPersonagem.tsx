@@ -3,10 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/CharacterForm.css';
 import { classesData } from '../data/classesData';
+import { racasData } from '../data/racasData';
+import { AntecedentesData } from '../data/antecedentesData'; // Alterado para 'racasData'
 import SecaoAtributos from './SecaoAtributos';
 import SecaoEsquerda from './SecaoEsquerda';
 import SecaoCentral from './SecaoCentral';
-import SecaoDireita from './SecaoDireita'; // ajuste o caminho se necessário
+import SecaoDireita from './SecaoDireita';
+import { Pericias, Ferramentas, Idiomas } from '../data/enums'; // Importar os Enums
 
 // Definindo o tipo Modificadores no escopo global
 type Modificadores = {
@@ -18,14 +21,10 @@ type Modificadores = {
     car: number;
 };
 
-type ItemInventario = {
+type Item = {
     item: string;
     quantidade: number;
     peso: number;
-};
-
-type Pericias = {
-    [chave: string]: boolean;
 };
 
 type TestesDeSalvaguarda = {
@@ -51,18 +50,19 @@ const FormularioPersonagem: React.FC = () => {
     // Estado das informações do personagem
     const [nomePersonagem, setNomePersonagem] = useState<string>('');
     const [raca, setRaca] = useState<string>('');
+    const [racaAnterior, setRacaAnterior] = useState<string>(''); // Estado para armazenar a raça anterior
     const [classe, setClasse] = useState<string>('');
     const [nivel, setNivel] = useState<number>(1);
     const [antecedente, setAntecedente] = useState<string>('');
     const [alinhamento, setAlinhamento] = useState<string>('');
-    const [experiencia, setExperiencia] = useState<string>('');
+    const [subclasses, setSubclasses] = useState<string>('');
 
     // Estado dos atributos e status
     const [movimento, setMovimento] = useState<number>(30);
     const [pvTemporarios, setPvTemporarios] = useState<number>(0);
     const [sucessos, setSucessos] = useState<boolean[]>([false, false, false]);
     const [falhas, setFalhas] = useState<boolean[]>([false, false, false]);
-    const [inventario, setInventario] = useState<ItemInventario[]>([{ item: 'Espada', quantidade: 1, peso: 3 }]);
+    const [inventario, setInventario] = useState<Item[]>([]);
     const [pvMaximos, setPvMaximos] = useState<number>(10);
     const [pvIniciais, setPvIniciais] = useState<number>(10);
     const [pvAtuais, setPvAtuais] = useState<number>(10);
@@ -76,25 +76,25 @@ const FormularioPersonagem: React.FC = () => {
         sab: false,
         car: false,
     });
-    const [pericias, setPericias] = useState<Pericias>({
-        acrobacia: false,
-        adestrarAnimais: false,
-        arcanismo: false,
-        atletismo: false,
-        atuacao: false,
-        enganacao: false,
-        furtividade: false,
-        historia: false,
-        intimidacao: false,
-        intuicao: false,
-        investigacao: false,
-        medicina: false,
-        natureza: false,
-        percepcao: false,
-        persuasao: false,
-        prestidigitacao: false,
-        religiao: false,
-        sobrevivencia: false,
+    const [pericias, setPericias] = useState<Record<Pericias, boolean>>({
+        [Pericias.Acrobacia]: false,
+        [Pericias.AdestrarAnimais]: false,
+        [Pericias.Arcanismo]: false,
+        [Pericias.Atletismo]: false,
+        [Pericias.Atuacao]: false,
+        [Pericias.Enganacao]: false,
+        [Pericias.Furtividade]: false,
+        [Pericias.Historia]: false,
+        [Pericias.Intimidacao]: false,
+        [Pericias.Intuicao]: false,
+        [Pericias.Investigacao]: false,
+        [Pericias.Medicina]: false,
+        [Pericias.Natureza]: false,
+        [Pericias.Percepcao]: false,
+        [Pericias.Persuasao]: false,
+        [Pericias.Prestidigitacao]: false,
+        [Pericias.Religiao]: false,
+        [Pericias.Sobrevivencia]: false,
     });
 
     // Funções para alterar os valores de PV
@@ -103,13 +103,18 @@ const FormularioPersonagem: React.FC = () => {
     const handleMudancaPvTemporarios = (novosPvTemporarios: number) => setPvTemporarios(novosPvTemporarios);
 
     const handleMudancaNivel = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const novoNivel = parseInt(e.target.value, 10) || 1;
+        let novoNivel = parseInt(e.target.value, 10) || 1;
+        if (novoNivel < 1) novoNivel = 1;
+        if (novoNivel > 20) novoNivel = 20;
         setNivel(novoNivel);
     };
 
-    const handleAdicionarItem = () => {
-        const novoItem = { item: 'Nova Arma', quantidade: 1, peso: 5 }; // Exemplo de novo item
-        setInventario([...inventario, novoItem]);
+    const aoAdicionarItem = (novoItem: Item) => {
+        setInventario((prevInventario) => [...prevInventario, novoItem]);
+    };
+
+    const aoRemoverItem = (indice: number) => {
+        setInventario((prevInventario) => prevInventario.filter((_, i) => i !== indice));
     };
 
     const alternarSucesso = (index: number) => {
@@ -133,19 +138,11 @@ const FormularioPersonagem: React.FC = () => {
         setTestesDeSalvaguarda(prev => ({ ...prev, [atributo]: !prev[atributo] }));
     };
 
-    const alternarPericia = (pericia: keyof Pericias) => {
-        setPericias(prev => ({ ...prev, [pericia]: !prev[pericia] }));
-    };
-
     const ajustarAtributo = (atributo: string, valor: number) => {
         setAtributos(atributosAnteriores => ({
             ...atributosAnteriores,
             [atributo]: atributosAnteriores[atributo] + valor,
         }));
-    };
-
-    const adicionarItemAoInventario = (novoItem: ItemInventario) => {
-        setInventario([...inventario, novoItem]);
     };
 
     const calcularBonusDeProficiencia = (nivel: number): number => {
@@ -164,8 +161,8 @@ const FormularioPersonagem: React.FC = () => {
     const modificadorCon = Math.floor((atributos.constituicao - 10) / 2);
     const modificadorSab = Math.floor((atributos.sabedoria - 10) / 2);
     const modificadorFor = Math.floor((atributos.forca - 10) / 2);
-    const modificadorInt = Math.floor((atributos.forca - 10) / 2);
-    const modificadorCar = Math.floor((atributos.forca - 10) / 2);
+    const modificadorInt = Math.floor((atributos.inteligencia - 10) / 2);
+    const modificadorCar = Math.floor((atributos.carisma - 10) / 2);
 
     const classeEncontrada = classesData.find(classeItem => classeItem.nome === classe);
 
@@ -204,7 +201,7 @@ const FormularioPersonagem: React.FC = () => {
     useEffect(() => {
         localStorage.setItem('nomePersonagem', nomePersonagem);
     }, [nomePersonagem]);
-    
+
     useEffect(() => {
         const nomeSalvo = localStorage.getItem('nomePersonagem');
         if (nomeSalvo) {
@@ -212,19 +209,103 @@ const FormularioPersonagem: React.FC = () => {
         }
     }, []);
 
+    useEffect(() => {
+        const aplicarAptidoes = () => {
+            let novasPericias = { ...pericias };
+
+            // Aplicar aptidões da classe selecionada
+            const classeEncontrada = classesData.find((c) => c.nome === classe);
+            if (classeEncontrada) {
+                classeEncontrada.proficiencias.pericias.forEach((pericia) => {
+                    novasPericias[pericia] = true; // Marca automaticamente as perícias da classe
+                });
+            }
+
+            // Aplicar aptidões do antecedente selecionado
+            const antecedenteEncontrado = AntecedentesData.find((a) => a.nome === antecedente);
+            if (antecedenteEncontrado) {
+                antecedenteEncontrado.proficiencias.pericias.forEach((pericia) => {
+                    novasPericias[pericia] = true; // Marca automaticamente as perícias do antecedente
+                });
+            }
+
+            // Atualizar o estado de perícias, mantendo o controle das alteradas manualmente
+            setPericias((prevPericias) => ({
+                ...prevPericias,
+                ...novasPericias, // Garante que as perícias automáticas sejam aplicadas
+            }));
+        };
+
+        aplicarAptidoes();
+    }, [classe, antecedente]);
+
+    const alternarPericia = (pericia: Pericias) => {
+        setPericias(prev => ({
+            ...prev,
+            [pericia]: !prev[pericia], // Alterna entre true/false quando o usuário clica
+        }));
+    };
+
+
     const classeDeArmadura = classeEncontrada && typeof classeEncontrada.ca === 'function'
-    ? classeEncontrada.ca({
-        des: modificadorDes,
-        con: modificadorCon,
-        sab: modificadorSab,
-        for: modificadorFor,
-        int: modificadorInt,
-        car: modificadorCar,
-    })
-    : 10 + modificadorDes; // Valor base caso não haja função de CA
+        ? classeEncontrada.ca({
+            des: modificadorDes,
+            con: modificadorCon,
+            sab: modificadorSab,
+            for: modificadorFor,
+            int: modificadorInt,
+            car: modificadorCar,
+        })
+        : 10 + modificadorDes; // Valor base caso não haja função de CA
 
-const iniciativa = modificadorDes;
+    const iniciativa = modificadorDes;
 
+    // Função para ajustar os atributos com base na raça
+    const aplicarModificadoresRaciais = (novaRaca: string) => {
+        const racaEncontradaAtual = racasData.find((r) => r.nome === novaRaca);
+        const racaEncontradaAnterior = racasData.find((r) => r.nome === racaAnterior);
+        setAtributos((prevAtributos) => {
+            let novosAtributos = { ...prevAtributos };
+
+            // Se houver uma raça anterior, subtrair os modificadores
+            if (racaEncontradaAnterior) {
+                const { modificadores } = racaEncontradaAnterior;
+                novosAtributos = {
+                    forca: novosAtributos.forca - (modificadores.for || 0),
+                    destreza: novosAtributos.destreza - (modificadores.des || 0),
+                    constituicao: novosAtributos.constituicao - (modificadores.con || 0),
+                    inteligencia: novosAtributos.inteligencia - (modificadores.int || 0),
+                    sabedoria: novosAtributos.sabedoria - (modificadores.sab || 0),
+                    carisma: novosAtributos.carisma - (modificadores.car || 0),
+                };
+            }
+
+            // Aplicar os modificadores da nova raça
+            if (racaEncontradaAtual) {
+                const { modificadores } = racaEncontradaAtual;
+                novosAtributos = {
+                    forca: novosAtributos.forca + (modificadores.for || 0),
+                    destreza: novosAtributos.destreza + (modificadores.des || 0),
+                    constituicao: novosAtributos.constituicao + (modificadores.con || 0),
+                    inteligencia: novosAtributos.inteligencia + (modificadores.int || 0),
+                    sabedoria: novosAtributos.sabedoria + (modificadores.sab || 0),
+                    carisma: novosAtributos.carisma + (modificadores.car || 0),
+                };
+            }
+
+            return novosAtributos;
+        });
+
+        // Atualizar a raça anterior
+        setRacaAnterior(novaRaca);
+    };
+
+    // Disparar efeito quando a raça é selecionada
+    useEffect(() => {
+        if (raca) {
+            aplicarModificadoresRaciais(raca);
+        }
+    }, [raca]);
 
     return (
         <div className="p-3 flex flex-col items-center box-content">
@@ -234,7 +315,7 @@ const iniciativa = modificadorDes;
                 <div className="nomebox">
                     <input
                         type="text"
-                        className="w-10/12 h-7 bg-gray-200 dark:bg-[#353535] dark:text-white p-3 text-center mt-8"
+                        className="w-10/12 h-7 bg-slate-50 dark:bg-[#353535] dark:text-white p-3 text-center mt-8"
                         placeholder="Nome do Personagem"
                         value={nomePersonagem}
                         onChange={(e) => setNomePersonagem(e.target.value)}
@@ -242,17 +323,22 @@ const iniciativa = modificadorDes;
                 </div>
                 <div className="char-box bg-cover flex items-center">
                     <div className="grid grid-cols-3 gap-x-2 gap-y-1 w-full">
-                        <input
-                            type="text"
-                            className="bg-gray-200 dark:bg-[#353535] dark:text-white p-1 text-center text-xs h-7"
-                            placeholder="Raça"
+                        <select
+                            className="bg-slate-50 dark:bg-[#353535] dark:text-white p-1 text-center text-xs h-7"
                             value={raca}
                             onChange={(e) => setRaca(e.target.value)}
-                        />
+                        >
+                            <option value="">Selecione uma Raça</option>
+                            {racasData.map((racaItem, index) => (
+                                <option key={index} value={racaItem.nome}>
+                                    {racaItem.nome}
+                                </option>
+                            ))}
+                        </select>
 
                         {/* Campo de seleção para as classes */}
                         <select
-                            className="bg-gray-200 dark:bg-[#353535] dark:text-white p-1 text-center text-xs h-7"
+                            className="bg-slate-50 dark:bg-[#353535] dark:text-white p-1 text-center text-xs h-7"
                             value={classe}
                             onChange={(e) => setClasse(e.target.value)}
                         >
@@ -267,7 +353,7 @@ const iniciativa = modificadorDes;
                         {/* Campo de entrada para o nível */}
                         <input
                             type="number"
-                            className="bg-gray-200 dark:bg-[#353535] dark:text-white p-1 text-center text-xs h-7"
+                            className="bg-slate-50 dark:bg-[#353535] dark:text-white p-1 text-center text-xs h-7"
                             placeholder="Nível"
                             value={nivel}
                             onChange={(e) => setNivel(parseInt(e.target.value, 10) || 1)}
@@ -275,27 +361,46 @@ const iniciativa = modificadorDes;
                             max={20} // O nível máximo é 20
                         />
 
-                        <input
-                            type="text"
-                            className="bg-gray-200 dark:bg-[#353535] dark:text-white p-1 text-center text-xs h-7"
-                            placeholder="Antecedente"
+                        <select
+                            className="bg-slate-50 dark:bg-[#353535] dark:text-white p-1 text-center text-xs h-7"
                             value={antecedente}
                             onChange={(e) => setAntecedente(e.target.value)}
-                        />
-                        <input
-                            type="text"
-                            className="bg-gray-200 dark:bg-[#353535] dark:text-white p-1 text-center text-xs h-7"
-                            placeholder="Alinhamento"
+                        >
+                            <option value="">Selecione uma Raça</option>
+                            {AntecedentesData.map((antecedenteItem, index) => (
+                                <option key={index} value={antecedenteItem.nome}>
+                                    {antecedenteItem.nome}
+                                </option>
+                            ))}
+                        </select>
+                        <select
+                            className="bg-slate-50 dark:bg-[#353535] dark:text-white p-1 text-center text-xs h-7"
                             value={alinhamento}
                             onChange={(e) => setAlinhamento(e.target.value)}
-                        />
-                        <input
-                            type="text"
-                            className="bg-gray-200 dark:bg-[#353535] dark:text-white p-1 text-center text-xs h-7"
-                            placeholder="XP"
-                            value={experiencia}
-                            onChange={(e) => setExperiencia(e.target.value)}
-                        />
+                        >
+                            <option value="">Selecione o Alinhamento</option>
+                            <option value="Leal e Bom">Leal e Bom</option>
+                            <option value="Neutro e Bom">Neutro e Bom</option>
+                            <option value="Caótico e Bom">Caótico e Bom</option>
+                            <option value="Leal e Neutro">Leal e Neutro</option>
+                            <option value="Neutro">Neutro</option>
+                            <option value="Caótico e Neutro">Caótico e Neutro</option>
+                            <option value="Leal e Mal">Leal e Mal</option>
+                            <option value="Neutro e Mal">Neutro e Mal</option>
+                            <option value="Caótico e Mal">Caótico e Mal</option>
+                        </select>
+                        <select
+                            className="bg-slate-50 dark:bg-[#353535] dark:text-white p-1 text-center text-xs h-7"
+                            value={subclasses}
+                            onChange={(e) => setSubclasses(e.target.value)}
+                        >
+                            <option value="">Selecione uma SubClasse</option>
+                            {classeEncontrada && classeEncontrada.subclasses.map((subclasseItem, index) => (
+                                <option key={index} value={subclasseItem.nome}>
+                                    {subclasseItem.nome}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                 </div>
             </div>
@@ -343,7 +448,8 @@ const iniciativa = modificadorDes;
                         });
                     }}
                     aoAlterarMovimento={setMovimento}
-                    aoAdicionarItem={handleAdicionarItem}
+                    aoAdicionarItem={aoAdicionarItem}
+                    aoRemoverItem={aoRemoverItem}
                     aoAlterarHpMaximo={handleMudancaPvMaximos}
                     aoAlterarHpAtual={handleMudancaPvAtuais}
                     aoAlterarHpTemporario={handleMudancaPvTemporarios}
@@ -352,7 +458,7 @@ const iniciativa = modificadorDes;
                 />
 
                 {/* Direita */}
-                <SecaoDireita className={classe} nivel={nivel} />
+                <SecaoDireita className={classe} nivel={nivel} racaName={raca} subclasseName={subclasses} />
             </div>
         </div>
     );

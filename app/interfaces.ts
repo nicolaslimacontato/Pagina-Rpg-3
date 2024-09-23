@@ -1,3 +1,5 @@
+import { Pericias, Ferramentas, Idiomas } from './data/enums'; // Importar os Enums
+
 export type Modifiers = {
   for: number;
   des: number;
@@ -6,6 +8,32 @@ export type Modifiers = {
   sab: number;
   car: number;
 };
+
+export interface Raca {
+  nome: string;
+  modificadores: Partial<Modifiers>;  // Modificadores raciais
+  habilidades: {
+    nome: string;
+    descricao: string;
+  }[];
+  idiomas: Idiomas[];  // Idiomas que a raça fala (agora usando o enum Idiomas)
+  velocidade: number;  // Velocidade base da raça
+}
+
+export interface Antecedentes {
+  nome: string;
+  proficiencias: {
+    pericias: Pericias[];  // Agora usando o enum Pericias
+    ferramentas: Ferramentas[];  // Agora usando o enum Ferramentas
+    idiomas: Idiomas[];  // Agora usando o enum Idiomas
+  };
+  equipamentos: string[];  // Equipamentos recebidos
+  caracteristicas: {
+    nome: string;
+    descricao: string;
+  }[];
+  peculiaridades: string[];  // Peculiaridades de personalidade
+}
 
 export interface Classe {
   nome: string;
@@ -16,9 +44,9 @@ export interface Classe {
   proficiencias: {
     armaduras: string[];
     armas: string[];
-    ferramentas: string[];
+    ferramentas: Ferramentas[];  // Agora usando o enum Ferramentas
     testesDeResistencia: string[];
-    pericias: string[];
+    pericias: Pericias[];  // Agora usando o enum Pericias
   };
   equipamento: string[][];
   habilidades: {
@@ -36,4 +64,3 @@ export interface Classe {
     }[];
   }[];
 };
-  
