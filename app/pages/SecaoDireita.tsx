@@ -47,8 +47,8 @@ const SecaoDireita: React.FC<SecaoDireitaProps> = ({ className, nivel, racaName,
 
     return (
         <div className="right-section">
-                        {/* Características */}
-                        <div className="characteristic-box -mt-4">
+            {/* Características */}
+            <div className="characteristic-box -mt-4">
                 <div className="p-5 rounded-lg bg-gray-100 dark:bg-[#353535]">
                     <span className="text-lg font-semibold text-gray-700 dark:text-white text-center flex justify-center">Características</span>
 
@@ -95,15 +95,21 @@ const SecaoDireita: React.FC<SecaoDireitaProps> = ({ className, nivel, racaName,
             </div>
             {/* Habilidades */}
             <div className="characteristic-box mt-6">
-                <span className="text-lg font-semibold text-gray-700 dark:text-white text-center flex justify-center mb-2">Habilidades</span>
+                <span className="text-lg font-semibold text-gray-700 dark:text-white text-center flex justify-center mb-2">
+                    Habilidades
+                </span>
                 {todasHabilidades.map((habilidade, index) => (
                     <div key={index} className="ability-box dark:text-white">
                         <div className="ability-header" onClick={() => toggleHabilidade(habilidade.nome)}>
-                            <span className="ability-name">{habilidade.nome} <br /> <span className='text-xs text-gray-500 font-extrabold dark:text-[#be161d]'>Origem: {habilidade.tipo}</span></span>
+                            <span className="ability-name">
+                                {habilidade.nome} <br />
+                                <span className='text-xs text-gray-500 font-extrabold dark:text-[#be161d]'>Origem: {habilidade.tipo}</span>
+                            </span>
                             <span className={`ability-toggle ${openHabilidades[habilidade.nome] ? 'open' : ''}`}>&#x25BC;</span>
                         </div>
                         <div className={`ability-description ${openHabilidades[habilidade.nome] ? 'open' : ''}`}>
-                            <p>{habilidade.descricao}</p>
+                            {/* Usando dangerouslySetInnerHTML para renderizar HTML */}
+                            <div dangerouslySetInnerHTML={{ __html: habilidade.descricao }} />
                         </div>
                     </div>
                 ))}

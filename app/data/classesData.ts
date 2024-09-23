@@ -72,14 +72,14 @@ export const classesData: CharacterClass[] = [
       ["Pacote de Aventureiro"]
     ],
     habilidades: [
-      { nome: "Ataque Extra", descricao: "Pode atacar duas vezes por turno", nivel: 5 }
+      { nome: "Ataque Extra", descricao: `<p>Pode atacar duas vezes por turno</p>`, nivel: 5 }
     ],
     subclasses: [
       {
         nome: "Campeão",
         descricao: "Especialista em combate físico",
         habilidades: [
-          { nome: "Golpe Brutal", descricao: "Aumenta a chance de causar dano crítico", nivel: 3 }
+          { nome: "Golpe Brutal", descricao: `<p>Aumenta a chance de causar dano crítico</p>`, nivel: 3 }
         ]
       }
     ]
@@ -101,89 +101,89 @@ export const classesData: CharacterClass[] = [
     habilidades: [
       {
         nome: "Inspiração de Bardo",
-        descricao: "Concede bônus aos aliados.",
+        descricao: `<p>Concede bônus aos aliados.</p>`,
         nivel: 1
       },
       {
         nome: "Magia de Bardo",
-        descricao: "Conhece magias e pode usá-las.",
+        descricao: `<p>Conhece magias e pode usá-las.</p>`,
         nivel: 2
       },
       {
         nome: "Fontes de Magia",
-        descricao: "Ganha um novo recurso para magia.",
+        descricao: `<p>Ganha um novo recurso para magia.</p>`,
         nivel: 3
       },
       {
         nome: "Canção de Descanso",
-        descricao: "Permite que aliados recuperem pontos de vida durante um descanso curto.",
+        descricao: `<p>Permite que aliados recuperem pontos de vida durante um descanso curto.</p>`,
         nivel: 5
       },
       {
         nome: "Habilidade de Bardo Aprimorada",
-        descricao: "Permite usar habilidades adicionais.",
+        descricao: `<p>Permite usar habilidades adicionais.</p>`,
         nivel: 10
       },
       {
         nome: "Magia Avançada",
-        descricao: "Aumenta a eficácia das magias.",
+        descricao: `<p>Aumenta a eficácia das magias.</p>`,
         nivel: 15
       },
       {
         nome: "Inspiração de Bardo Superior",
-        descricao: "Melhora o bônus concedido aos aliados.",
+        descricao: `<p>Melhora o bônus concedido aos aliados.</p>`,
         nivel: 18
       }
     ],
     subclasses: [
       {
         nome: "Colégio do Valor",
-        descricao: "Especializado em combate e apoio.",
+        descricao: `<p>Especializado em combate e apoio.</p>`,
         habilidades: [
           {
             nome: "Combatente Inspirado",
-            descricao: "Adiciona bônus de combate.",
+            descricao:`<p>Adiciona bônus de combate.</p>`,
             nivel: 3
           },
           {
             nome: "Aura de Valor",
-            descricao: "Cria uma aura que protege aliados.",
+            descricao:`<p>Cria uma aura que protege aliados.</p>`,
             nivel: 7
           },
           {
             nome: "Inspiração de Heroísmo",
-            descricao: "Aumenta a capacidade de combate dos aliados.",
+            descricao:`<p>Aumenta a capacidade de combate dos aliados.</p>`,
             nivel: 10
           },
           {
             nome: "Mestre do Valor",
-            descricao: "Aumenta a eficácia das habilidades de combate.",
+            descricao:`<p>Aumenta a eficácia das habilidades de combate.</p>`,
             nivel: 15
           }
         ]
       },
       {
         nome: "Colégio da Glamour",
-        descricao: "Foca em encantamentos e ilusões.",
+        descricao:`<p>Foca em encantamentos e ilusões.</p>`,
         habilidades: [
           {
             nome: "Magia de Glamour",
-            descricao: "Concede habilidades de encantamento.",
+            descricao:`<p>Concede habilidades de encantamento.</p>`,
             nivel: 3
           },
           {
             nome: "Presença de Glamour",
-            descricao: "Aumenta a presença social e a influência.",
+            descricao:`<p>Aumenta a presença social e a influência.</p>`,
             nivel: 6
           },
           {
             nome: "Encantamento Superior",
-            descricao: "Melhora a eficácia das magias de encantamento.",
+            descricao:`<p>Melhora a eficácia das magias de encantamento.</p>`,
             nivel: 10
           },
           {
             nome: "Ilusão Majestosa",
-            descricao: "Cria ilusões poderosas e impressionantes.",
+            descricao:`<p>Cria ilusões poderosas e impressionantes.</p>`,
             nivel: 15
           }
         ]
@@ -207,18 +207,18 @@ export const classesData: CharacterClass[] = [
     habilidades: [
       {
         nome: "Inspiração de Bardo",
-        descricao: "Concede bônus aos aliados.",
+        descricao:`<p>Concede bônus aos aliados.</p>`,
         nivel: 1
       }
     ],
     subclasses: [
       {
         nome: "Colégio do Valor",
-        descricao: "Especializado em combate e apoio.",
+        descricao:`<p>Especializado em combate e apoio.</p>`,
         habilidades: [
           {
             nome: "Combatente Inspirado",
-            descricao: "Adiciona bônus de combate.",
+            descricao:`<p>Adiciona bônus de combate.</p>`,
             nivel: 3
           }
         ]

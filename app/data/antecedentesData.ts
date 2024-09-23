@@ -38,7 +38,6 @@ export const AntecedentesData: CharacterAntecedentes[] = [
         nome: "Especialidade Criminal",
         descricao: `
           <p>Existem muitos tipos de criminosos, e dentro de uma guilda de ladrões ou organização criminosa similar, membros individuais têm especialidades particulares. Mesmo criminosos que operam fora de tais organizações têm fortes preferências por certos tipos de crimes em detrimento de outros. Escolha o papel que você desempenhou em sua vida criminosa, ou role na tabela abaixo.</p>
-          
           <table class="min-w-full divide-y mt-3 divide-gray-200 dark:divide-gray-900">
             <thead class="bg-gray-50 dark:bg-zinc-900">
               <tr>

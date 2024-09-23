@@ -46,7 +46,7 @@ export type RacialModifiers = {
       habilidades: [
         {
           nome: "Versatilidade Humana",
-          descricao: "Os humanos recebem +1 em todos os atributos.",
+          descricao: `<p><p> Os humanos recebem +1 em todos os atributos.</p>` ,
         },
       ],
       resistencias: [],
@@ -61,19 +61,19 @@ export type RacialModifiers = {
       habilidades: [
         {
           nome: "Visão no Escuro",
-          descricao: "Pode enxergar no escuro até 18 metros.",
+          descricao: `<p>Pode enxergar no escuro até 18 metros.</p>`,
         },
         {
           nome: "Sentidos Aguçados",
-          descricao: "Proficiência em Percepção.",
+          descricao: `<p>Proficiência em Percepção.</p>`,
         },
         {
           nome: "Ancestral Feérico",
-          descricao: "Vantagem em testes de resistência contra ser encantado, e magias não podem colocar o elfo para dormir.",
+          descricao: `<p>Vantagem em testes de resistência contra ser encantado, e magias não podem colocar o elfo para dormir.</p>`,
         },
         {
           nome: "Transe",
-          descricao: "Elfos não precisam dormir. Em vez disso, meditam profundamente por 4 horas.",
+          descricao: `<p>Elfos não precisam dormir. Em vez disso, meditam profundamente por 4 horas.</p>`,
         },
       ],
       resistencias: [],
@@ -88,21 +88,21 @@ export type RacialModifiers = {
       habilidades: [
         {
           nome: "Visão no Escuro",
-          descricao: "Pode enxergar no escuro até 18 metros.",
+          descricao: `<p>Pode enxergar no escuro até 18 metros.</p>`,
         },
         {
           nome: "Resiliência Anã",
-          descricao: "Vantagem em testes de resistência contra venenos, e resistência a dano de veneno.",
+          descricao: `<p>Vantagem em testes de resistência contra venenos, e resistência a dano de veneno.</p>`,
         },
         {
           nome: "Treinamento em Combate Anão",
-          descricao: "Proficiência com machados e martelos de guerra.",
+          descricao: `<p>Proficiência com machados e martelos de guerra.</p>`,
         },
       ],
       resistencias: [
         {
           tipo: "Veneno",
-          descricao: "Resistência a dano de veneno.",
+          descricao: `<p>Resistência a dano de veneno.</p>`,
         },
       ],
       idiomas: [Idiomas.Comum, Idiomas.Anao],
@@ -117,15 +117,15 @@ export type RacialModifiers = {
       habilidades: [
         {
           nome: "Ameaçador",
-          descricao: "Proficiência em Intimidação.",
+          descricao: `<p>Proficiência em Intimidação.</p>`,
         },
         {
           nome: "Fúria Selvagem",
-          descricao: "Quando seus pontos de vida caem para 0, pode voltar a 1 ponto de vida uma vez por descanso longo.",
+          descricao: `<p>Quando seus pontos de vida caem para 0, pode voltar a 1 ponto de vida uma vez por descanso longo.</p>`,
         },
         {
           nome: "Ataque Selvagem",
-          descricao: "Ao rolar um dano crítico, pode rolar um dado de dano adicional.",
+          descricao: `<p>Ao rolar um dano crítico, pode rolar um dado de dano adicional.</p>`,
         },
       ],
       resistencias: [],
@@ -140,15 +140,15 @@ export type RacialModifiers = {
       habilidades: [
         {
           nome: "Sortudo",
-          descricao: "Quando rola um 1 em um ataque, teste de habilidade ou teste de resistência, pode rolar de novo.",
+          descricao: `<p>Quando rola um 1 em um ataque, teste de habilidade ou teste de resistência, pode rolar de novo.</p>`,
         },
         {
           nome: "Corajoso",
-          descricao: "Vantagem em testes de resistência contra ser amedrontado.",
+          descricao: `<p>Vantagem em testes de resistência contra ser amedrontado.</p>`,
         },
         {
           nome: "Agilidade Halfling",
-          descricao: "Pode se mover através do espaço de qualquer criatura que seja maior do que você.",
+          descricao: `<p>Pode se mover através do espaço de qualquer criatura que seja maior do que você.</p>`,
         },
       ],
       resistencias: [],
