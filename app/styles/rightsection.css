@@ -67,7 +67,7 @@
 }
 
 .ability-description.open {
-    max-height: 200px; /* Ajuste conforme necessário */
+    max-height: max-content; /* Ajuste conforme necessário */
     opacity: 1;
 }
 

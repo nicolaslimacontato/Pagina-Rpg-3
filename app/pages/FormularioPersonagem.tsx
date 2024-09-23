@@ -458,7 +458,7 @@ const FormularioPersonagem: React.FC = () => {
                 />
 
                 {/* Direita */}
-                <SecaoDireita className={classe} nivel={nivel} racaName={raca} subclasseName={subclasses} />
+                <SecaoDireita className={classe} nivel={nivel} racaName={raca} subclasseName={subclasses} antecedenteName={antecedente} />
             </div>
         </div>
     );

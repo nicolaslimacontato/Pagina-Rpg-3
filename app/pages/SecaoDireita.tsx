@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { classesData, CharacterClass } from '@/app/data/classesData'; // Ajuste o caminho conforme necessário
 import { racasData, raca } from '../data/racasData'; // Importar dados das raças
+import { AntecedentesData, CharacterAntecedentes } from '../data/antecedentesData'; // Importar dados dos antecedentes
 import '../styles/rightsection.css';
 
 interface SecaoDireitaProps {
@@ -8,9 +9,10 @@ interface SecaoDireitaProps {
     nivel: number; // Nível do personagem
     racaName: string; // Nome da raça
     subclasseName: string; // Nome da subclasse
+    antecedenteName: string; // Nome do antecedente
 }
 
-const SecaoDireita: React.FC<SecaoDireitaProps> = ({ className, nivel, racaName, subclasseName }) => {
+const SecaoDireita: React.FC<SecaoDireitaProps> = ({ className, nivel, racaName, subclasseName, antecedenteName }) => {
     const [openHabilidades, setOpenHabilidades] = useState<{ [key: string]: boolean }>({});
 
     const toggleHabilidade = (nomeHabilidade: string) => {
@@ -24,14 +26,15 @@ const SecaoDireita: React.FC<SecaoDireitaProps> = ({ className, nivel, racaName,
     const classeSelecionada: CharacterClass | undefined = classesData.find(classe => classe.nome === className);
     const subclasseSelecionada = classeSelecionada?.subclasses.find(subclasse => subclasse.nome === subclasseName); // Verifica se a subclasse existe
     const racaSelecionada: raca | undefined = racasData.find(raca => raca.nome === racaName);
+    const antecedenteSelecionado: CharacterAntecedentes | undefined = AntecedentesData.find(antecedente => antecedente.nome === antecedenteName);
 
-    if (!classeSelecionada || !racaSelecionada || !subclasseSelecionada) {
-        return <div className='characteristic-box h-max font-bold text-xl'><h2>Selecione as informações a cima para ver suas habilidades e antecedentes</h2></div>;
+    if (!classeSelecionada || !racaSelecionada || !subclasseSelecionada || !antecedenteSelecionado) {
+        return <div className='characteristic-box h-max font-bold text-xl'><h2>Selecione as informações acima para ver suas habilidades e antecedentes</h2></div>;
     }
 
     const habilidadesFiltradasClasse = classeSelecionada.habilidades.filter(habilidade => habilidade.nivel <= nivel);
     const habilidadesSubclasse = subclasseSelecionada.habilidades.filter(habilidade => habilidade.nivel <= nivel);
-    
+
     const habilidadesCombinadas = [
         ...habilidadesFiltradasClasse.map(habilidade => ({
             ...habilidade,
@@ -47,8 +50,8 @@ const SecaoDireita: React.FC<SecaoDireitaProps> = ({ className, nivel, racaName,
 
     return (
         <div className="right-section">
+            {/* Características */}
             <div className="characteristic-box -mt-4">
-                {/* Características */}
                 <div className="p-5 rounded-lg bg-gray-100 dark:bg-[#353535]">
                     <span className="text-lg font-semibold text-gray-700 dark:text-white text-center flex justify-center">Características</span>
 
@@ -100,7 +103,7 @@ const SecaoDireita: React.FC<SecaoDireitaProps> = ({ className, nivel, racaName,
                 {habilidadesCombinadas.map((habilidade, index) => (
                     <div key={index} className="ability-box dark:text-white">
                         <div className="ability-header" onClick={() => toggleHabilidade(habilidade.nome)}>
-                            <span className="ability-name">{habilidade.nome} <br/> <span className='text-xs text-[#be161d]'>Origem: {habilidade.tipo}</span></span>
+                            <span className="ability-name">{habilidade.nome} <br /> <span className='text-xs text-[#be161d]'>Origem: {habilidade.tipo}</span></span>
                             <span className={`ability-toggle ${openHabilidades[habilidade.nome] ? 'open' : ''}`}>&#x25BC;</span>
                         </div>
                         <div className={`ability-description ${openHabilidades[habilidade.nome] ? 'open' : ''}`}>
@@ -115,7 +118,7 @@ const SecaoDireita: React.FC<SecaoDireitaProps> = ({ className, nivel, racaName,
                 <span className="text-lg font-semibold text-gray-700 dark:text-white text-center flex justify-center mb-2">Habilidades da Raça</span>
                 {habilidadesRaca.map((habilidade, index) => (
                     <div key={index} className="ability-box dark:text-white">
-                        <div 
+                        <div
                             className="ability-header"
                             onClick={() => toggleHabilidade(habilidade.nome)}
                         >
@@ -127,6 +130,28 @@ const SecaoDireita: React.FC<SecaoDireitaProps> = ({ className, nivel, racaName,
                         <div className={`ability-description dark:text-white ${openHabilidades[habilidade.nome] ? 'open' : ''}`}>
                             <p>{habilidade.descricao}</p>
                         </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* Antecedentes */}
+            <div className="characteristic-box mt-6">
+                <span className="text-lg font-semibold text-gray-700 dark:text-white text-center flex justify-center mb-2">Antecedentes</span>
+                {antecedenteSelecionado.habilidades.map((habilidade, index) => (
+                    <div key={index} className="ability-box dark:text-white">
+                        <div
+                            className="ability-header"
+                            onClick={() => toggleHabilidade(habilidade.nome)}
+                        >
+                            <span className="ability-name dark:text-white">{habilidade.nome}</span>
+                            <span className={`ability-toggle dark:text-white ${openHabilidades[habilidade.nome] ? 'open' : ''}`}>
+                                &#x25BC;
+                            </span>
+                        </div>
+                        <div
+                            className={`ability-description dark:text-white ${openHabilidades[habilidade.nome] ? 'open' : ''}`}
+                            dangerouslySetInnerHTML={{ __html: habilidade.descricao }}
+                        />
                     </div>
                 ))}
             </div>
