@@ -378,7 +378,7 @@ const FormularioPersonagem: React.FC = () => {
                             value={alinhamento}
                             onChange={(e) => setAlinhamento(e.target.value)}
                         >
-                            <option value="">Selecione o Alinhamento</option>
+                            <option value="">Alinhamento</option>
                             <option value="Leal e Bom">Leal e Bom</option>
                             <option value="Neutro e Bom">Neutro e Bom</option>
                             <option value="Caótico e Bom">Caótico e Bom</option>
@@ -394,7 +394,7 @@ const FormularioPersonagem: React.FC = () => {
                             value={subclasses}
                             onChange={(e) => setSubclasses(e.target.value)}
                         >
-                            <option value="">Selecione uma SubClasse</option>
+                            <option value="">SubClasse</option>
                             {classeEncontrada && classeEncontrada.subclasses.map((subclasseItem, index) => (
                                 <option key={index} value={subclasseItem.nome}>
                                     {subclasseItem.nome}
