@@ -20,20 +20,20 @@ export interface Raca {
   velocidade: number;  // Velocidade base da raça
 }
 
-export interface Antecedentes {
+export type CharacterAntecedentes = {
   nome: string;
   proficiencias: {
-    pericias: Pericias[];  // Agora usando o enum Pericias
-    ferramentas: Ferramentas[];  // Agora usando o enum Ferramentas
-    idiomas: Idiomas[];  // Agora usando o enum Idiomas
+    pericias: Pericias[];
+    ferramentas: Ferramentas[];
+    idiomas: Idiomas[];
   };
-  equipamentos: string[];  // Equipamentos recebidos
-  caracteristicas: {
+  equipamentos: string[];
+  habilidades: {
     nome: string;
     descricao: string;
   }[];
-  peculiaridades: string[];  // Peculiaridades de personalidade
-}
+  peculiaridades: string[];
+};
 
 export interface Classe {
   nome: string;

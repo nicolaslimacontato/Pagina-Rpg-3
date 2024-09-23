@@ -1,7 +1,7 @@
 import { classesData } from './data/classesData';
 import { racasData } from './data/racasData'; // Correto: 'racasData'
 import { AntecedentesData } from './data/antecedentesData'; // Correto: 'AntecedentesData'
-import { Classe, Raca, Antecedentes } from './interfaces'; // Importar corretamente as interfaces
+import { Classe, Raca, CharacterAntecedentes } from './interfaces'; // Importar corretamente as interfaces
 
 // Função para gerar classes
 function gerarClasses(): Classe[] {
@@ -14,7 +14,7 @@ function gerarRacas(): Raca[] {  // Tipo de retorno correto: 'Raca[]'
 }
 
 // Função para gerar antecedentes
-function gerarAntecedentes(): Antecedentes[] {  // Tipo de retorno correto: 'Antecedentes[]'
+function gerarAntecedentes(): CharacterAntecedentes[] {
   return AntecedentesData;
 }
 
