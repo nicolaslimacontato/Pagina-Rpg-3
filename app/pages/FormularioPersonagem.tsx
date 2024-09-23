@@ -36,6 +36,11 @@ type TestesDeSalvaguarda = {
     car: boolean;
 };
 
+type Proficiencias = {
+    idiomas: Record<string, boolean>;
+    ferramentas: Record<string, boolean>;
+};
+
 const FormularioPersonagem: React.FC = () => {
     // Estado dos atributos
     const [atributos, setAtributos] = useState({
@@ -68,6 +73,17 @@ const FormularioPersonagem: React.FC = () => {
     const [pvAtuais, setPvAtuais] = useState<number>(10);
     const [habilidades, setHabilidades] = useState<{ [chave: string]: boolean }>({});
     const [inspiracao, setInspiracao] = useState<boolean>(false);
+    const [proficiencias, setProficiencias] = useState<Proficiencias>({
+        idiomas: Object.values(Idiomas).reduce((acc, idioma) => {
+            acc[idioma] = false; // Default value
+            return acc;
+        }, {} as Record<string, boolean>),
+        ferramentas: Object.values(Ferramentas).reduce((acc, ferramenta) => {
+            acc[ferramenta] = false; // Default value
+            return acc;
+        }, {} as Record<string, boolean>),
+    });
+
     const [testesDeSalvaguarda, setTestesDeSalvaguarda] = useState<TestesDeSalvaguarda>({
         for: false,
         des: false,
@@ -209,35 +225,53 @@ const FormularioPersonagem: React.FC = () => {
         }
     }, []);
 
-    useEffect(() => {
-        const aplicarAptidoes = () => {
-            let novasPericias = { ...pericias };
+    const aplicarAptidoes = () => {
+        let novasPericias = { ...pericias };
+        let novasFerramentas = { ...proficiencias.ferramentas };
+        let novosIdiomas = { ...proficiencias.idiomas };
 
-            // Aplicar aptidões da classe selecionada
-            const classeEncontrada = classesData.find((c) => c.nome === classe);
-            if (classeEncontrada) {
-                classeEncontrada.proficiencias.pericias.forEach((pericia) => {
-                    novasPericias[pericia] = true; // Marca automaticamente as perícias da classe
-                });
-            }
+        // Aplicar aptidões da classe
+        const classeEncontrada = classesData.find((c) => c.nome === classe);
+        if (classeEncontrada) {
+            classeEncontrada.proficiencias.pericias.forEach((pericia) => {
+                novasPericias[pericia] = true; // Marca as perícias da classe
+            });
+            classeEncontrada.proficiencias.ferramentas.forEach((ferramenta) => {
+                novasFerramentas[ferramenta] = true; // Marca as ferramentas da classe
+            });
+        }
 
-            // Aplicar aptidões do antecedente selecionado
-            const antecedenteEncontrado = AntecedentesData.find((a) => a.nome === antecedente);
-            if (antecedenteEncontrado) {
-                antecedenteEncontrado.proficiencias.pericias.forEach((pericia) => {
-                    novasPericias[pericia] = true; // Marca automaticamente as perícias do antecedente
-                });
-            }
+        // Aplicar aptidões do antecedente
+        const antecedenteEncontrado = AntecedentesData.find((a) => a.nome === antecedente);
+        if (antecedenteEncontrado) {
+            antecedenteEncontrado.proficiencias.pericias.forEach((pericia) => {
+                novasPericias[pericia] = true; // Marca as perícias do antecedente
+            });
+            antecedenteEncontrado.proficiencias.ferramentas.forEach((ferramenta) => {
+                novasFerramentas[ferramenta] = true; // Marca as ferramentas do antecedente
+            });
+            antecedenteEncontrado.proficiencias.idiomas.forEach((idioma) => {
+                novosIdiomas[idioma] = true; // Marca os idiomas do antecedente
+            });
+        }
 
-            // Atualizar o estado de perícias, mantendo o controle das alteradas manualmente
-            setPericias((prevPericias) => ({
-                ...prevPericias,
-                ...novasPericias, // Garante que as perícias automáticas sejam aplicadas
-            }));
-        };
+        // Aplicar modificadores da raça
+        const racaEncontrada = racasData.find((r) => r.nome === raca);
+        if (racaEncontrada) {
+            racaEncontrada.idiomas.forEach((idioma) => {
+                novosIdiomas[idioma] = true; // Marca os idiomas da raça
+            });
+        }
 
-        aplicarAptidoes();
-    }, [classe, antecedente]);
+        // Atualizar os estados
+        setPericias(novasPericias);
+        setProficiencias((prev) => ({
+            ...prev,
+            ferramentas: novasFerramentas,
+            idiomas: novosIdiomas,
+        }));
+    };
+
 
     const alternarPericia = (pericia: Pericias) => {
         setPericias(prev => ({
@@ -245,6 +279,10 @@ const FormularioPersonagem: React.FC = () => {
             [pericia]: !prev[pericia], // Alterna entre true/false quando o usuário clica
         }));
     };
+
+    useEffect(() => {
+        aplicarAptidoes();
+    }, [classe, raca, antecedente]);
 
 
     const classeDeArmadura = classeEncontrada && typeof classeEncontrada.ca === 'function'
@@ -414,6 +452,7 @@ const FormularioPersonagem: React.FC = () => {
                         atributos={atributos}
                         testesDeResistencia={testesDeSalvaguarda}
                         aptidoes={pericias}
+                        proficiencias={proficiencias}  // Make sure this prop is passed
                         alternarTesteDeResistencia={alternarTesteDeSalvaguarda}
                         alternarAptidao={alternarPericia}
                         bonusDeProficiencia={bonusDeProficiencia}

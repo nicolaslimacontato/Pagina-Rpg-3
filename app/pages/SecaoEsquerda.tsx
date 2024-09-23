@@ -30,11 +30,13 @@ type Props = {
   atributos: Atributos;
   testesDeResistencia: TestesDeResistencia;
   aptidoes: Aptidoes;
+  proficiencias: Proficiencias;
   alternarTesteDeResistencia: (atributo: keyof TestesDeResistencia) => void;
-  alternarAptidao: (aptidao: Pericias) => void;  // Mudança aqui
+  alternarAptidao: (aptidao: Pericias) => void;
   bonusDeProficiencia: number;
   alternarInspiracao: () => void;
   inspiracao: boolean;
+
 };
 
 // Função de cálculo do modificador movida para fora do componente para evitar recriação
@@ -53,6 +55,7 @@ const SecaoEsquerda: React.FC<Props> = ({
   atributos,
   testesDeResistencia,
   aptidoes,
+  proficiencias,
   alternarTesteDeResistencia,
   alternarAptidao,
   bonusDeProficiencia,
@@ -159,6 +162,39 @@ const SecaoEsquerda: React.FC<Props> = ({
                 </div>
               );
             })}
+        </div>
+      </div>
+      {/* Proficiencias */}
+      <div className="p-4 rounded-lg flex flex-col bg-gray-100 dark:bg-[#353535] border-2 border-black custom-box-shadow">
+        <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">PROFICIÊNCIAS</span>
+        <div className="flex flex-col mt-2 space-y-2">
+          {/* Idiomas */}
+          <div>
+            <span className="font-semibold text-gray-700 dark:text-gray-300">Idiomas:</span>
+            <ul className="ml-4">
+              {Object.entries(proficiencias.idiomas).map(([idioma, proficiente]) => (
+                proficiente ? (
+                  <li key={idioma} className="text-gray-700 dark:text-gray-300">
+                    {idioma}
+                  </li>
+                ) : null
+              ))}
+            </ul>
+          </div>
+
+          {/* Ferramentas */}
+          <div>
+            <span className="font-semibold text-gray-700 dark:text-gray-300">Ferramentas:</span>
+            <ul className="ml-4">
+              {Object.entries(proficiencias.ferramentas).map(([ferramenta, proficiente]) => (
+                proficiente ? (
+                  <li key={ferramenta} className="text-gray-700 dark:text-gray-300">
+                    {ferramenta}
+                  </li>
+                ) : null
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </div>
