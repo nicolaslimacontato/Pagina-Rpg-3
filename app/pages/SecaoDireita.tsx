@@ -22,9 +22,9 @@ const SecaoDireita: React.FC<SecaoDireitaProps> = ({ className, nivel, racaName,
         }));
     };
 
-    // Encontrar a classe selecionada
+    // Encontrar as informações selecionadas
     const classeSelecionada: CharacterClass | undefined = classesData.find(classe => classe.nome === className);
-    const subclasseSelecionada = classeSelecionada?.subclasses.find(subclasse => subclasse.nome === subclasseName); // Verifica se a subclasse existe
+    const subclasseSelecionada = classeSelecionada?.subclasses.find(subclasse => subclasse.nome === subclasseName);
     const racaSelecionada: raca | undefined = racasData.find(raca => raca.nome === racaName);
     const antecedenteSelecionado: CharacterAntecedentes | undefined = AntecedentesData.find(antecedente => antecedente.nome === antecedenteName);
 
@@ -34,24 +34,21 @@ const SecaoDireita: React.FC<SecaoDireitaProps> = ({ className, nivel, racaName,
 
     const habilidadesFiltradasClasse = classeSelecionada.habilidades.filter(habilidade => habilidade.nivel <= nivel);
     const habilidadesSubclasse = subclasseSelecionada.habilidades.filter(habilidade => habilidade.nivel <= nivel);
-
-    const habilidadesCombinadas = [
-        ...habilidadesFiltradasClasse.map(habilidade => ({
-            ...habilidade,
-            tipo: 'Classe',
-        })),
-        ...habilidadesSubclasse.map(habilidade => ({
-            ...habilidade,
-            tipo: 'Subclasse',
-        }))
-    ];
-
     const habilidadesRaca = racaSelecionada.habilidades;
+    const habilidadesAntecedentes = antecedenteSelecionado.habilidades;
+
+    // Combinar todas as habilidades
+    const todasHabilidades = [
+        ...habilidadesFiltradasClasse.map(habilidade => ({ ...habilidade, tipo: 'Classe' })),
+        ...habilidadesSubclasse.map(habilidade => ({ ...habilidade, tipo: 'Subclasse' })),
+        ...habilidadesRaca.map(habilidade => ({ ...habilidade, tipo: 'Raça' })),
+        ...habilidadesAntecedentes.map(habilidade => ({ ...habilidade, tipo: 'Antecedente' })),
+    ];
 
     return (
         <div className="right-section">
-            {/* Características */}
-            <div className="characteristic-box -mt-4">
+                        {/* Características */}
+                        <div className="characteristic-box -mt-4">
                 <div className="p-5 rounded-lg bg-gray-100 dark:bg-[#353535]">
                     <span className="text-lg font-semibold text-gray-700 dark:text-white text-center flex justify-center">Características</span>
 
@@ -96,14 +93,13 @@ const SecaoDireita: React.FC<SecaoDireitaProps> = ({ className, nivel, racaName,
                     </div>
                 </div>
             </div>
-
-            {/* Habilidades da Classe */}
+            {/* Habilidades */}
             <div className="characteristic-box mt-6">
-                <span className="text-lg font-semibold text-gray-700 dark:text-white text-center flex justify-center mb-2">Habilidades da Classe</span>
-                {habilidadesCombinadas.map((habilidade, index) => (
+                <span className="text-lg font-semibold text-gray-700 dark:text-white text-center flex justify-center mb-2">Habilidades</span>
+                {todasHabilidades.map((habilidade, index) => (
                     <div key={index} className="ability-box dark:text-white">
                         <div className="ability-header" onClick={() => toggleHabilidade(habilidade.nome)}>
-                            <span className="ability-name">{habilidade.nome} <br /> <span className='text-xs text-[#be161d]'>Origem: {habilidade.tipo}</span></span>
+                            <span className="ability-name">{habilidade.nome} <br /> <span className='text-xs text-gray-500 font-extrabold dark:text-[#be161d]'>Origem: {habilidade.tipo}</span></span>
                             <span className={`ability-toggle ${openHabilidades[habilidade.nome] ? 'open' : ''}`}>&#x25BC;</span>
                         </div>
                         <div className={`ability-description ${openHabilidades[habilidade.nome] ? 'open' : ''}`}>
@@ -112,51 +108,9 @@ const SecaoDireita: React.FC<SecaoDireitaProps> = ({ className, nivel, racaName,
                     </div>
                 ))}
             </div>
-
-            {/* Habilidades da Raça */}
-            <div className="characteristic-box mt-6">
-                <span className="text-lg font-semibold text-gray-700 dark:text-white text-center flex justify-center mb-2">Habilidades da Raça</span>
-                {habilidadesRaca.map((habilidade, index) => (
-                    <div key={index} className="ability-box dark:text-white">
-                        <div
-                            className="ability-header"
-                            onClick={() => toggleHabilidade(habilidade.nome)}
-                        >
-                            <span className="ability-name dark:text-white">{habilidade.nome}</span>
-                            <span className={`ability-toggle dark:text-white ${openHabilidades[habilidade.nome] ? 'open' : ''}`}>
-                                &#x25BC;
-                            </span>
-                        </div>
-                        <div className={`ability-description dark:text-white ${openHabilidades[habilidade.nome] ? 'open' : ''}`}>
-                            <p>{habilidade.descricao}</p>
-                        </div>
-                    </div>
-                ))}
-            </div>
-
-            {/* Antecedentes */}
-            <div className="characteristic-box mt-6">
-                <span className="text-lg font-semibold text-gray-700 dark:text-white text-center flex justify-center mb-2">Antecedentes</span>
-                {antecedenteSelecionado.habilidades.map((habilidade, index) => (
-                    <div key={index} className="ability-box dark:text-white">
-                        <div
-                            className="ability-header"
-                            onClick={() => toggleHabilidade(habilidade.nome)}
-                        >
-                            <span className="ability-name dark:text-white">{habilidade.nome}</span>
-                            <span className={`ability-toggle dark:text-white ${openHabilidades[habilidade.nome] ? 'open' : ''}`}>
-                                &#x25BC;
-                            </span>
-                        </div>
-                        <div
-                            className={`ability-description dark:text-white ${openHabilidades[habilidade.nome] ? 'open' : ''}`}
-                            dangerouslySetInnerHTML={{ __html: habilidade.descricao }}
-                        />
-                    </div>
-                ))}
-            </div>
         </div>
     );
 };
+
 
 export default SecaoDireita;
