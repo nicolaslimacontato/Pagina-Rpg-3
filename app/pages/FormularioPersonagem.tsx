@@ -404,7 +404,7 @@ const FormularioPersonagem: React.FC = () => {
                             value={antecedente}
                             onChange={(e) => setAntecedente(e.target.value)}
                         >
-                            <option value="">Selecione uma Raça</option>
+                            <option value="">Antecedentes</option>
                             {AntecedentesData.map((antecedenteItem, index) => (
                                 <option key={index} value={antecedenteItem.nome}>
                                     {antecedenteItem.nome}
